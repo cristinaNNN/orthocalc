@@ -83,6 +83,42 @@
     animation: fadeIn 0.3s ease-out;
   }
   
+  /* --- MEASUREMENTS ROW (Ported from BMI) --- */
+  .measurementsRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 4px; /* Slight padding to align with text below */
+    margin-bottom: 16px; /* Space between this row and the big result */
+  }
+
+  .measureItem {
+    display: flex;
+    flex-direction: column;
+    /* Optional: Align center if you prefer centered columns */
+    /* align-items: center; */ 
+  }
+
+  .measureLabel {
+    font-size: 0.75rem;
+    color: #94a3b8; /* Muted Slate */
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  .measureValue {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #334155; /* Dark Slate */
+  }
+
+  /* Optional: Add a divider line under the measurements like BMI has */
+  .divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 16px 0;
+  }
+
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }

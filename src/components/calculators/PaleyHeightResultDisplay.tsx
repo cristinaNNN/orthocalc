@@ -1,4 +1,3 @@
-// src/components/PaleyHeightResultDisplay.tsx
 'use client'
 
 import { PaleyHeightResult, formatImperial } from '@/lib/engines/paley_engine'
@@ -7,28 +6,54 @@ import FormulaPopover from './FormulaPopover'
 
 interface PaleyHeightResultDisplayProps {
   result: PaleyHeightResult
+  referenceDate?: string // <--- Added optional prop
 }
 
-export default function PaleyHeightResultDisplay({ result }: PaleyHeightResultDisplayProps) {
+export default function PaleyHeightResultDisplay({ result, referenceDate }: PaleyHeightResultDisplayProps) {
   if (!result) return null
 
   // Calculate percentage for the bar chart
   const currentPercent = (result.current_height_cm / result.predicted_height_cm) * 100
   const remainingPercent = 100 - currentPercent
 
-  // LaTeX Formula (Theoretical Only)
+  // Format Date Logic
+  const formattedDate = referenceDate 
+    ? new Date(referenceDate).toLocaleDateString() 
+    : 'N/A'
+
+  // LaTeX Formula
   const theoreticalFormula = `H_{predicted} = H_{current} \\times M`
 
   return (
     <div className={styles.resultContainer}>
       
+      {/* --- MEASUREMENTS ROW (Matches BMI Style) --- */}
+      <div className={styles.measurementsRow}>
+        <div className={styles.measureItem}>
+          <span className={styles.measureLabel}>Height</span>
+          <span className={styles.measureValue}>
+            {result.current_height_cm} <small>cm</small>
+          </span>
+        </div>
+        <div className={styles.measureItem}>
+          <span className={styles.measureLabel}>Date</span>
+          <span className={styles.measureValue}>{formattedDate}</span>
+        </div>
+        <div className={styles.measureItem}>
+          <span className={styles.measureLabel}>Gender</span>
+          <span className={styles.measureValue} style={{textTransform: 'capitalize'}}>
+            {result.gender}
+          </span>
+        </div>
+      </div>
+
+      <div className={styles.divider} /> 
+
       {/* 1. Main Headline */}
       <div className={styles.mainResult}>
         <div className={styles.valueGroupColumn}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                <span className={styles.labelSmall}>Predicted Maturity</span>
-               
-               {/* FORMULA POPUP */}
                <FormulaPopover 
                  title="Paley Formula"
                  formula={theoreticalFormula}
@@ -62,7 +87,6 @@ export default function PaleyHeightResultDisplay({ result }: PaleyHeightResultDi
 
       {/* 3. Metadata & Definitions */}
       <div className={styles.metaContainer}>
-        {/* UPDATED HEADER with Description */}
         <h5 className={styles.metaTitle}>
             METHODOLOGY: Paley Multiplier (Height)
             <FormulaPopover 
@@ -72,7 +96,6 @@ export default function PaleyHeightResultDisplay({ result }: PaleyHeightResultDi
         </h5>
         
         <div className={styles.metaGrid}>
-          
           <div className={styles.metaItem}>
             <div style={{display: 'flex', alignItems: 'center'}}>
                <span className={styles.metaLabel}>Multiplier</span>
@@ -101,7 +124,6 @@ export default function PaleyHeightResultDisplay({ result }: PaleyHeightResultDi
                 {result.is_bone_age ? 'Skeletal Age (Manual)' : 'Chronological (DOB)'}
              </span>
           </div>
-        
         </div>
       </div>
     </div>

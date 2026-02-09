@@ -1,4 +1,3 @@
-// src/components/calculators/PaleyHeightCalculator.tsx
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
@@ -138,7 +137,12 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
         )}
       </div>
 
-      {result && <PaleyHeightResultDisplay result={result} />}
+      {result && (
+        <PaleyHeightResultDisplay 
+          result={result} 
+          referenceDate={calcDate} /* <--- THIS WAS THE MISSING LINK */
+        />
+      )}
 
       <div className={styles.actions}>
         <button onClick={onCancel} className={styles.cancelBtn}>Cancel</button>

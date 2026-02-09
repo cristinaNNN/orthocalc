@@ -237,7 +237,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                          )}
                          {obs.calculation_type === 'paley_height' && (
                             <PaleyHeightResultDisplay 
-                              result={obs.results as PaleyHeightResult} 
+                              result={obs.results as PaleyHeightResult}
+                              /* FIX: Pass the saved date from inputs */
+                              referenceDate={obs.inputs?.reference_date} 
                             />
                          )}
                       </div>
