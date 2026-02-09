@@ -5,12 +5,19 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Encounter, Observation, Patient } from '@/types'
 import { BmiResult } from '@/lib/engines/bmi_engine'
-import { PaleyHeightResult } from '@/lib/engines/paley_engine' // <--- IMPORT THIS
+import { PaleyHeightResult } from '@/lib/engines/paley_engine'
+import { ScoliosisResult } from '@/lib/engines/scoliosis_engine' // <--- NEW
+
 import { X, Plus, Calculator, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
+
+// Calculators
 import BMICalculator from '../calculators/BMICalculator'
 import BMIResultDisplay from '../calculators/BMIResultDisplay'
-import PaleyHeightCalculator from '../calculators/PaleyHeightCalculator' // <--- IMPORT THIS
-import PaleyHeightResultDisplay from '../calculators/PaleyHeightResultDisplay' // <--- IMPORT THIS
+import PaleyHeightCalculator from '../calculators/PaleyHeightCalculator'
+import PaleyHeightResultDisplay from '../calculators/PaleyHeightResultDisplay'
+import ScoliosisCalculator from '../calculators/ScoliosisCalculator' // <--- NEW
+import ScoliosisResultDisplay from '../calculators/ScoliosisResultDisplay' // <--- NEW
+
 import styles from './EncounterDetailModal.module.css'
 
 interface EncounterDetailModalProps {
@@ -129,6 +136,7 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                 >
                   <option value="bmi">Body Mass Index (BMI)</option>
                   <option value="paley_height">Paley Adult Height Prediction</option>
+                  <option value="scoliosis_risk">Scoliosis Progression Risk (Lonstein)</option>
                 </select>
               </div>
 
@@ -142,11 +150,20 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                 />
               )}
 
-              {/* NEW: PALEY HEIGHT CALCULATOR */}
               {selectedCalc === 'paley_height' && patient && (
                 <PaleyHeightCalculator
                   dob={patient.date_of_birth}
                   gender={patient.gender}
+                  referenceDate={encounter.encounter_date}
+                  onSave={handleSaveObservation}
+                  onCancel={() => setIsAdding(false)}
+                />
+              )}
+
+              {/* NEW: SCOLIOSIS CALCULATOR */}
+              {selectedCalc === 'scoliosis_risk' && patient && (
+                <ScoliosisCalculator
+                  dob={patient.date_of_birth}
                   referenceDate={encounter.encounter_date}
                   onSave={handleSaveObservation}
                   onCancel={() => setIsAdding(false)}
@@ -162,10 +179,12 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
             ) : (
               observations.map(obs => {
                 const isExpanded = expandedObs === obs.id
+                
                 // Helper to get friendly title
                 const getTitle = (type: string | null) => {
                     if (type === 'bmi') return 'Body Mass Index'
                     if (type === 'paley_height') return 'Adult Height Prediction'
+                    if (type === 'scoliosis_risk') return 'Scoliosis Risk (Lonstein)'
                     return type
                 }
 
@@ -194,13 +213,22 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                                 </>
                               )}
                               
-                              {/* PALEY HEIGHT SUMMARY (NEW) */}
+                              {/* PALEY SUMMARY */}
                               {obs.calculation_type === 'paley_height' && (
                                 <>
                                   <span className={styles.summaryCategory}>Pred:</span>
                                   <span className={styles.summaryValue}>{obs.results.predicted_height_cm}cm</span>
+                                </>
+                              )}
+
+                              {/* SCOLIOSIS SUMMARY (NEW) */}
+                              {obs.calculation_type === 'scoliosis_risk' && (
+                                <>
+                                  <span className={styles.summaryValue}>LCR: {obs.results.risk_factor}</span>
                                   <span className={styles.summaryDot}>•</span>
-                                  <span className={styles.summaryCategory}>Growth Left: {obs.results.growth_remaining_cm}cm</span>
+                                  <span className={styles.summaryCategory}>
+                                     {obs.results.risk_category} RISK
+                                  </span>
                                 </>
                               )}
                             </div>
@@ -238,8 +266,13 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                          {obs.calculation_type === 'paley_height' && (
                             <PaleyHeightResultDisplay 
                               result={obs.results as PaleyHeightResult}
-                              /* FIX: Pass the saved date from inputs */
                               referenceDate={obs.inputs?.reference_date} 
+                            />
+                         )}
+                         {/* NEW: SCOLIOSIS DISPLAY */}
+                         {obs.calculation_type === 'scoliosis_risk' && (
+                            <ScoliosisResultDisplay
+                              result={obs.results as ScoliosisResult}
                             />
                          )}
                       </div>
