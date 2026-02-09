@@ -1,9 +1,10 @@
+// src/components/calculators/PaleyHeightCalculator.tsx
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import { Calendar } from 'lucide-react'
+import { Calendar, Info } from 'lucide-react'
 import { calculatePredictedHeight, PaleyHeightResult } from '@/lib/engines/paley_engine'
-import { getDemographicContext } from '@/lib/engines/bmi_engine' // Reuse for chronological age calc
+import { getDemographicContext } from '@/lib/engines/bmi_engine'
 import PaleyHeightResultDisplay from './PaleyHeightResultDisplay'
 import styles from './PaleyHeightCalculator.module.css'
 
@@ -19,18 +20,16 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
   const [height, setHeight] = useState('')
   const [calcDate, setCalcDate] = useState(referenceDate ? new Date(referenceDate).toISOString().split('T')[0] : '')
   
-  // Bone Age Logic
+  // LOGIC PRESERVED: Original Checkbox
   const [useBoneAge, setUseBoneAge] = useState(false)
   const [manualBoneAge, setManualBoneAge] = useState('')
 
   const [result, setResult] = useState<PaleyHeightResult | null>(null)
 
-  // 1. Calculate Chronological Age (Standard)
-  const chronologicalContext = useMemo(() => 
+  const context = useMemo(() => 
     getDemographicContext(dob, calcDate), 
   [dob, calcDate])
 
-  // 2. Real-time Calculation
   useEffect(() => {
     const h = parseFloat(height)
     if (!h || !gender) {
@@ -38,18 +37,21 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
       return
     }
 
-    // Determine which age to use
-    let ageToUse = chronologicalContext.ageMonths / 12
+    let ageToUse = context.ageMonths / 12
     
-    if (useBoneAge && manualBoneAge) {
-      ageToUse = parseFloat(manualBoneAge)
+    if (useBoneAge) {
+       const ba = parseFloat(manualBoneAge)
+       if (isNaN(ba) || ba <= 0) {
+         setResult(null)
+         return
+       }
+       ageToUse = ba
     }
 
     if (ageToUse > 0) {
-      const calc = calculatePredictedHeight(h, ageToUse, gender, useBoneAge)
-      setResult(calc)
+      setResult(calculatePredictedHeight(h, ageToUse, gender, useBoneAge, calcDate))
     }
-  }, [height, calcDate, useBoneAge, manualBoneAge, gender, chronologicalContext])
+  }, [height, calcDate, useBoneAge, manualBoneAge, gender, context.ageMonths])
 
   const handleSave = () => {
     if (!result) return
@@ -59,7 +61,8 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
         height_cm: height, 
         reference_date: calcDate,
         use_bone_age: useBoneAge,
-        age_used: result.age_used,
+        manual_bone_age: manualBoneAge,
+        age_used: result.meta.age_used,
         gender
       },
       results: result
@@ -68,10 +71,14 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
 
   return (
     <div className={styles.container}>
+      {/* HEADER (Matches others) */}
       <div className={styles.header}>
-        <div>
+        <div className={styles.titleGroup}>
            <h4 className={styles.title}>Adult Height Prediction</h4>
-           <p className={styles.subTitle}>Paley Multiplier Method (2000/2016)</p>
+           <span className={styles.subTitle}>Paley Multiplier Method</span>
+        </div>
+        <div className={styles.badges}>
+           <span className={styles.badge}>{gender || 'N/A'}</span>
         </div>
       </div>
 
@@ -79,14 +86,13 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
         {/* Date Input */}
         <div className={styles.inputGroup}>
           <label>Date of Measurement</label>
-          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-            <Calendar size={16} style={{ position: 'absolute', left: 10, color: '#64748b' }} />
+          <div className={styles.dateInputWrapper}>
+            <Calendar size={16} className={styles.inputIcon} />
             <input 
               type="date" 
               value={calcDate} 
               onChange={e => setCalcDate(e.target.value)}
               className={styles.input}
-              style={{ paddingLeft: '2.25rem' }}
             />
           </div>
         </div>
@@ -104,7 +110,7 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
           />
         </div>
 
-        {/* Bone Age Toggle */}
+        {/* CHECKBOX UI (PRESERVED) */}
         <div className={styles.checkboxGroup}>
            <input 
              type="checkbox" 
@@ -115,7 +121,7 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
            <label htmlFor="boneAgeToggle">Manual Bone Age Override</label>
         </div>
 
-        {/* Manual Age Input (Conditional) */}
+        {/* Conditional Age Input */}
         {useBoneAge ? (
            <div className={styles.inputGroup}>
              <label>Skeletal Age (Years)</label>
@@ -125,25 +131,30 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
                onChange={e => setManualBoneAge(e.target.value)}
                placeholder="e.g. 11.5"
                className={styles.input}
+               autoFocus
              />
            </div>
         ) : (
            <div className={styles.inputGroup}>
              <label>Chronological Age</label>
-             <div style={{ padding: '0.75rem', background: '#f1f5f9', borderRadius: '8px', color: '#64748b'}}>
-                {(chronologicalContext.ageMonths / 12).toFixed(2)} Years
+             <div style={{ padding: '0.75rem', background: '#f1f5f9', borderRadius: '8px', color: '#64748b', fontSize: '1rem'}}>
+                {(context.ageMonths / 12).toFixed(2)} Years
              </div>
            </div>
         )}
       </div>
 
-      {result && (
-        <PaleyHeightResultDisplay 
-          result={result} 
-          referenceDate={calcDate} /* <--- THIS WAS THE MISSING LINK */
-        />
+      {/* RESULT AREA */}
+      {result ? (
+        <PaleyHeightResultDisplay result={result} />
+      ) : (
+        <div className={styles.placeholder}>
+          <Info size={20} />
+          <span>Enter height and date to see prediction.</span>
+        </div>
       )}
 
+      {/* ACTIONS */}
       <div className={styles.actions}>
         <button onClick={onCancel} className={styles.cancelBtn}>Cancel</button>
         <button 
