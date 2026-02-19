@@ -1,5 +1,5 @@
 // src/lib/engines/paley_engine.ts
-import { PALEY_HEIGHT_BOYS, PALEY_HEIGHT_GIRLS } from '../data/paley_data'
+import { PALEY_HEIGHT_BOYS, PALEY_HEIGHT_GIRLS } from '../data/paley_height_data'
 
 export interface PaleyHeightResult {
   predicted_height_cm: number

@@ -1,4 +1,4 @@
-// src/lib/paley_data.ts
+// src/lib/paley_height_data.ts
 
 /**
  * Paley Height Multipliers (Source: Sanders et al. 2016 / Paley 2000)
