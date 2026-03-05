@@ -1,0 +1,443 @@
+/* src/components/calculators/LLDCalculator.module.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    background: #ffffff;
+  }
+  
+  /* HEADER STYLES */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .titleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .title {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .subTitle {
+    font-size: 0.875rem;
+    color: #64748b;
+  }
+  .badges {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .badge {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  /* INPUT GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+  }
+  .inputGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .inputGroup label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+  }
+  .optional {
+    font-weight: 400;
+    color: #94a3b8;
+    font-size: 0.8rem;
+  }
+  .input {
+    padding: 0.75rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    background: white;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .input:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  }
+  .input:disabled {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+  }
+  
+  /* DATE INPUTS */
+  .dateInputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  .inputIcon {
+    position: absolute;
+    left: 0.75rem;
+    color: #a0aec0;
+  }
+  .dateInputWrapper .input {
+    padding-left: 2.5rem;
+  }
+  .readOnlyBox {
+    padding: 0.75rem;
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 1rem;
+    border: 1px solid transparent;
+  }
+  
+  /* TOGGLES */
+  .checkboxGroup {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+  .checkboxGroup input[type="checkbox"] {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: #3182ce;
+    cursor: pointer;
+  }
+  .checkboxGroup label {
+    font-size: 0.9rem;
+    color: #334155;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .divider {
+    border: 0;
+    height: 1px;
+    background: #e2e8f0;
+    margin: 0.5rem 0;
+  }
+  
+  /* COMPACT MATRIX */
+  .compactMatrix {
+    display: grid;
+    grid-template-columns: 50px 1fr 1fr;
+    gap: 0.5rem;
+    align-items: center;
+    background: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  .matrixRowLabel {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+  }
+  .compactMatrix .input {
+    padding: 0.6rem;
+    font-size: 0.95rem;
+    text-align: center;
+  }
+  
+  /* ACTIONS & PLACEHOLDER */
+  .placeholder {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #64748b;
+    font-size: 0.9rem;
+  }
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 1.5rem;
+  }
+  .cancelBtn {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #cbd5e0;
+    background: white;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cancelBtn:hover {
+    background: #f7fafc;
+  }
+  .saveBtn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: #3182ce;
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .saveBtn:hover:not(:disabled) {
+    background: #2b6cb0;
+  }
+  .saveBtn:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+  }
+  
+  /* --- RESULT DISPLAY UNIFIED CLASSES --- */
+  
+  .resultContainer {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.5rem;
+  }
+  
+  .measurementsRow {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .measureItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .measureLabel {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .measureValue {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1e293b;
+  }
+  .measureValue small {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: normal;
+  }
+  
+  .mainResult {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0;
+  }
+  .valueGroup {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+  .mainValue {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1;
+  }
+  .unit {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #64748b;
+  }
+  .categoryPill {
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .grayPill {
+    background: #f1f5f9;
+    color: #475569;
+  }
+  
+  .warningBox {
+    background: #fffaf0;
+    border-left: 4px solid #dd6b20;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 4px;
+    font-size: 0.9rem;
+  }
+  .warningBox ul {
+    margin: 0.5rem 0 0 0;
+    padding-left: 1.5rem;
+    color: #c05621;
+  }
+  
+  /* --- RE-ENGINEERED CHART TRACK ARCHITECTURE --- */
+  
+  .chartArea {
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    height: 380px;
+    margin: 1.5rem 0 2rem 0;
+  }
+  
+  .limbColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 120px;
+    height: 100%;
+  }
+  .limbColumn h4 {
+    margin: 0 0 0.5rem 0;
+    color: #475569;
+  }
+  
+  .chartTrack {
+    flex: 1; /* Takes all remaining vertical space between H4 and limbTotal */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* CRITICAL: Anchors the bar to the bottom */
+    border-bottom: 3px solid #cbd5e0; /* The clinical 'floor' */
+    margin-bottom: 0.5rem;
+  }
+  
+  .barContainer {
+    width: 65px;
+    display: flex;
+    flex-direction: column;
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: height 0.3s ease-out;
+  }
+  
+  /* STRICT FLEX BASIS TO PREVENT CONTENT SQUISHING */
+  .segmentProjected,
+  .segmentArtificial,
+  .segmentFemur,
+  .segmentTibia {
+    flex-basis: 0; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .segmentText {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  
+  .segmentProjected {
+    background: repeating-linear-gradient(45deg, #e2e8f0, #e2e8f0 10px, #f8fafc 10px, #f8fafc 20px);
+    border: 1px dashed #94a3b8;
+    border-bottom: none;
+  }
+  .segmentProjected .segmentText {
+    color: #475569;
+    text-shadow: none;
+  }
+  .segmentArtificial {
+    background: #f97316;
+    border-top: 1px solid rgba(255,255,255,0.3);
+  }
+  .segmentFemur {
+    background: #38bdf8;
+    border-top: 1px solid rgba(255,255,255,0.3);
+  }
+  .segmentTibia {
+    background: #0284c7;
+    border-top: 1px solid rgba(255,255,255,0.3);
+  }
+  
+  .limbTotal {
+    font-weight: bold;
+    color: #334155;
+  }
+  
+  .chartLegend {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    font-size: 0.85rem;
+    margin: 1.5rem 0 0.5rem 0;
+    color: #475569;
+  }
+  .legendItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .colorTibia { display: inline-block; width: 12px; height: 12px; background: #0284c7; border-radius: 2px;}
+  .colorFemur { display: inline-block; width: 12px; height: 12px; background: #38bdf8; border-radius: 2px;}
+  .colorArtificial { display: inline-block; width: 12px; height: 12px; background: #f97316; border-radius: 2px;}
+  .colorProjected { display: inline-block; width: 12px; height: 12px; border: 1px dashed #94a3b8; background: #f8fafc; border-radius: 2px;}
+  
+  /* METHODOLOGY CONTAINER */
+  .metaContainer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+  .metaTitle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 1rem 0;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .metaGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1.25rem;
+  }
+  .metaItem {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .metaLabel {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .metaValue {
+    font-size: 1rem;
+    color: #1e293b;
+    font-weight: 500;
+  }

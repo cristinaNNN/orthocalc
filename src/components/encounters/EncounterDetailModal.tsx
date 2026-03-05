@@ -3,10 +3,10 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { Encounter, Observation, Patient } from '@/types'
+import { Encounter, Observation, Patient, LLDResults } from '@/types'
 import { BmiResult } from '@/lib/engines/bmi_engine'
 import { PaleyHeightResult } from '@/lib/engines/paley_engine'
-import { ScoliosisResult } from '@/lib/engines/scoliosis_engine' // <--- NEW
+import { ScoliosisResult } from '@/lib/engines/scoliosis_engine'
 
 import { X, Plus, Calculator, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
 
@@ -15,8 +15,10 @@ import BMICalculator from '../calculators/BMICalculator'
 import BMIResultDisplay from '../calculators/BMIResultDisplay'
 import PaleyHeightCalculator from '../calculators/PaleyHeightCalculator'
 import PaleyHeightResultDisplay from '../calculators/PaleyHeightResultDisplay'
-import ScoliosisCalculator from '../calculators/ScoliosisCalculator' // <--- NEW
-import ScoliosisResultDisplay from '../calculators/ScoliosisResultDisplay' // <--- NEW
+import ScoliosisCalculator from '../calculators/ScoliosisCalculator'
+import ScoliosisResultDisplay from '../calculators/ScoliosisResultDisplay'
+import LLDCalculator from '../calculators/LLDCalculator'
+import LLDResultDisplay from '../calculators/LLDResultDisplay'
 
 import styles from './EncounterDetailModal.module.css'
 
@@ -91,6 +93,14 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
     setExpandedObs(prev => prev === id ? null : id)
   }
 
+  // Fractional age calculation strictly for the LLD Engine
+  const getFractionalAgeYears = (dob: string | null, refDate: string) => {
+    if (!dob) return 0
+    const birthTime = new Date(dob).getTime()
+    const refTime = new Date(refDate).getTime()
+    return (refTime - birthTime) / (1000 * 60 * 60 * 24 * 365.25)
+  }
+
   if (!isOpen || !encounter) return null
 
   return (
@@ -137,7 +147,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                   <option value="bmi">Body Mass Index (BMI)</option>
                   <option value="paley_height">Paley Adult Height Prediction</option>
                   <option value="scoliosis_risk">Scoliosis Progression Risk (Lonstein)</option>
+                  <option value="lld">Leg Length Discrepancy (LLD)</option>
                 </select>
+                <button className={styles.cancelBtnText} onClick={() => setIsAdding(false)}>Cancel</button>
               </div>
 
               {selectedCalc === 'bmi' && patient && (
@@ -160,13 +172,22 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                 />
               )}
 
-              {/* NEW: SCOLIOSIS CALCULATOR */}
               {selectedCalc === 'scoliosis_risk' && patient && (
                 <ScoliosisCalculator
                   dob={patient.date_of_birth}
                   referenceDate={encounter.encounter_date}
                   onSave={handleSaveObservation}
                   onCancel={() => setIsAdding(false)}
+                />
+              )}
+
+              {selectedCalc === 'lld' && patient && (
+                <LLDCalculator
+                  patientAgeYears={getFractionalAgeYears(patient.date_of_birth, encounter.encounter_date)}
+                  patientGender={patient.gender || 'Unknown'}
+                  onSave={async (inputs, results) => {
+                    await handleSaveObservation({ inputs, results, calculation_type: 'lld' })
+                  }}
                 />
               )}
             </div>
@@ -185,6 +206,7 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                     if (type === 'bmi') return 'Body Mass Index'
                     if (type === 'paley_height') return 'Adult Height Prediction'
                     if (type === 'scoliosis_risk') return 'Scoliosis Risk (Lonstein)'
+                    if (type === 'lld') return 'Leg Length Discrepancy'
                     return type
                 }
 
@@ -221,13 +243,24 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                                 </>
                               )}
 
-                              {/* SCOLIOSIS SUMMARY (NEW) */}
+                              {/* SCOLIOSIS SUMMARY */}
                               {obs.calculation_type === 'scoliosis_risk' && (
                                 <>
                                   <span className={styles.summaryValue}>LCR: {obs.results.risk_factor}</span>
                                   <span className={styles.summaryDot}>•</span>
                                   <span className={styles.summaryCategory}>
                                      {obs.results.risk_category} RISK
+                                  </span>
+                                </>
+                              )}
+
+                              {/* LLD SUMMARY */}
+                              {obs.calculation_type === 'lld' && (
+                                <>
+                                  <span className={styles.summaryValue}>{obs.results.projected_lld_cm} cm</span>
+                                  <span className={styles.summaryDot}>•</span>
+                                  <span className={styles.summaryCategory}>
+                                     {obs.results.discrepancy_type}
                                   </span>
                                 </>
                               )}
@@ -269,10 +302,15 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                               referenceDate={obs.inputs?.reference_date} 
                             />
                          )}
-                         {/* NEW: SCOLIOSIS DISPLAY */}
                          {obs.calculation_type === 'scoliosis_risk' && (
                             <ScoliosisResultDisplay
                               result={obs.results as ScoliosisResult}
+                            />
+                         )}
+                         {obs.calculation_type === 'lld' && (
+                            <LLDResultDisplay
+                              result={obs.results as LLDResults}
+                              inputs={obs.inputs}
                             />
                          )}
                       </div>
