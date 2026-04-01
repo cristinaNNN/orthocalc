@@ -11,15 +11,24 @@ import styles from './ScoliosisCalculator.module.css'
 interface ScoliosisCalculatorProps {
   dob: string | null
   referenceDate: string 
+  initialInputs?: any
   onSave: (data: { inputs: any, results: any, calculation_type: string }) => void
   onCancel: () => void
 }
 
-export default function ScoliosisCalculator({ dob, referenceDate, onSave, onCancel }: ScoliosisCalculatorProps) {
+export default function ScoliosisCalculator({ dob, referenceDate, initialInputs, onSave, onCancel }: ScoliosisCalculatorProps) {
   const [cobbAngle, setCobbAngle] = useState('')
   const [risserSign, setRisserSign] = useState<number | null>(null)
   const [calcDate, setCalcDate] = useState(referenceDate ? new Date(referenceDate).toISOString().split('T')[0] : '')
   const [result, setResult] = useState<ScoliosisResult | null>(null)
+
+  useEffect(() => {
+    if (initialInputs) {
+      setCobbAngle(initialInputs.cobb_angle || '')
+      setRisserSign(initialInputs.risser_sign ?? null)
+      setCalcDate(initialInputs.reference_date || '')
+    }
+  }, [initialInputs])
 
   const context = useMemo(() => 
     getDemographicContext(dob, calcDate), 

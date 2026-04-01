@@ -1,19 +1,21 @@
 // src/components/encounters/AddEncounterModal.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { X } from 'lucide-react'
+import { Encounter } from '@/types'
 import styles from './AddEncounterModal.module.css'
 
 interface AddEncounterModalProps {
   patientId: string
   isOpen: boolean
+  initialData?: Encounter | null
   onClose: () => void
   onSuccess: () => void
 }
 
-export default function AddEncounterModal({ patientId, isOpen, onClose, onSuccess }: AddEncounterModalProps) {
+export default function AddEncounterModal({ patientId, isOpen, initialData, onClose, onSuccess }: AddEncounterModalProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
@@ -22,6 +24,20 @@ export default function AddEncounterModal({ patientId, isOpen, onClose, onSucces
   const [type, setType] = useState('Consultation')
   const [reason, setReason] = useState('')
   const [notes, setNotes] = useState('')
+
+  useEffect(() => {
+    if (initialData && isOpen) {
+      setDate(new Date(initialData.encounter_date).toISOString().split('T')[0])
+      setType(initialData.encounter_type || 'Consultation')
+      setReason(initialData.primary_encounter_reason || '')
+      setNotes(initialData.notes || '')
+    } else if (!isOpen) {
+      setDate(new Date().toISOString().split('T')[0])
+      setType('Consultation')
+      setReason('')
+      setNotes('')
+    }
+  }, [initialData, isOpen])
 
   if (!isOpen) return null
 
@@ -33,25 +49,34 @@ export default function AddEncounterModal({ patientId, isOpen, onClose, onSucces
     const supabase = createClient()
 
     try {
-      const { error: insertError } = await supabase
-        .from('encounters')
-        .insert([
-          {
-            patient_id: patientId,
+      if (initialData) {
+        const { error: updateError } = await supabase
+          .from('encounters')
+          .update({
             encounter_date: new Date(date).toISOString(),
             encounter_type: type,
             primary_encounter_reason: reason,
             notes: notes
-          }
-        ])
+          })
+          .eq('id', initialData.id)
 
-      if (insertError) throw insertError
+        if (updateError) throw updateError
+      } else {
+        const { error: insertError } = await supabase
+          .from('encounters')
+          .insert([
+            {
+              patient_id: patientId,
+              encounter_date: new Date(date).toISOString(),
+              encounter_type: type,
+              primary_encounter_reason: reason,
+              notes: notes
+            }
+          ])
 
-      // Reset form
-      setReason('')
-      setNotes('')
-      setType('Consultation')
-      
+        if (insertError) throw insertError
+      }
+
       onSuccess()
       onClose()
     } catch (err: any) {
@@ -65,8 +90,8 @@ export default function AddEncounterModal({ patientId, isOpen, onClose, onSucces
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h2>New Encounter</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+            <h2>{initialData ? 'Edit Encounter' : 'New Encounter'}</h2>
             <button 
               onClick={onClose}
               style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
@@ -136,7 +161,7 @@ export default function AddEncounterModal({ patientId, isOpen, onClose, onSucces
               Cancel
             </button>
             <button type="submit" disabled={loading} className={styles.submitButton}>
-              {loading ? 'Creating...' : 'Create Encounter'}
+              {loading ? 'Saving...' : (initialData ? 'Update Encounter' : 'Create Encounter')}
             </button>
           </div>
         </form>

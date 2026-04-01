@@ -1,19 +1,21 @@
 // src/components/patients/AddPatientModal.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { X, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Patient } from '@/types'
 import { validateAndExtractCNP, ROMANIAN_COUNTIES } from '@/lib/utils/cnp'
 import styles from './AddPatientModal.module.css'
 
 type AddPatientModalProps = {
   isOpen: boolean
+  initialData?: Patient | null
   onClose: () => void
   onSuccess: () => void
 }
 
-export default function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatientModalProps) {
+export default function AddPatientModal({ isOpen, initialData, onClose, onSuccess }: AddPatientModalProps) {
   const supabase = createClient()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -32,6 +34,33 @@ export default function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatie
     gender: 'Male',
     county: ROMANIAN_COUNTIES[0] 
   })
+
+  useEffect(() => {
+    if (initialData && isOpen) {
+      setFormData({
+        first_name: initialData.first_name,
+        family_name: initialData.family_name,
+        cnp: initialData.cnp || '',
+        date_of_birth: initialData.date_of_birth || '',
+        gender: initialData.gender || 'Male',
+        county: initialData.county || ROMANIAN_COUNTIES[0]
+      })
+      if (initialData.cnp && initialData.cnp.length === 13) {
+        setCnpStatus({ isValid: true, message: 'Valid CNP' })
+      }
+    } else if (!isOpen) {
+      // Reset when closed
+      setFormData({
+        first_name: '',
+        family_name: '',
+        cnp: '',
+        date_of_birth: '',
+        gender: 'Male',
+        county: ROMANIAN_COUNTIES[0]
+      })
+      setCnpStatus({ isValid: false })
+    }
+  }, [initialData, isOpen])
 
   if (!isOpen) return null
 
@@ -101,37 +130,62 @@ export default function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatie
       return
     }
 
-    const { error: insertError } = await supabase
-      .from('patients')
-      .insert([
-        {
-          doctor_id: user.id,
+    if (initialData) {
+      // UPDATE
+      const { error: updateError } = await supabase
+        .from('patients')
+        .update({
           first_name: formData.first_name,
           family_name: formData.family_name,
           cnp: formData.cnp,
           date_of_birth: formData.date_of_birth,
           gender: formData.gender,
           county: formData.county
-        }
-      ])
+        })
+        .eq('id', initialData.id)
 
-    if (insertError) {
-      setError(insertError.message)
-      setLoading(false)
+      if (updateError) {
+        setError(updateError.message)
+        setLoading(false)
+      } else {
+        setLoading(false)
+        onSuccess()
+        onClose()
+      }
     } else {
-      setLoading(false)
-      onSuccess()
-      onClose()
-      // Reset Form
-      setFormData({
-        first_name: '', 
-        family_name: '', 
-        cnp: '', 
-        date_of_birth: '', 
-        gender: 'Male', 
-        county: ROMANIAN_COUNTIES[0]
-      })
-      setCnpStatus({ isValid: false })
+      // INSERT
+      const { error: insertError } = await supabase
+        .from('patients')
+        .insert([
+          {
+            doctor_id: user.id,
+            first_name: formData.first_name,
+            family_name: formData.family_name,
+            cnp: formData.cnp,
+            date_of_birth: formData.date_of_birth,
+            gender: formData.gender,
+            county: formData.county
+          }
+        ])
+
+      if (insertError) {
+        setError(insertError.message)
+        setLoading(false)
+      } else {
+        setLoading(false)
+        onSuccess()
+        onClose()
+        // Reset Form
+        setFormData({
+          first_name: '', 
+          family_name: '', 
+          cnp: '', 
+          date_of_birth: '', 
+          gender: 'Male', 
+          county: ROMANIAN_COUNTIES[0]
+        })
+        setCnpStatus({ isValid: false })
+      }
     }
   }
 
@@ -140,7 +194,7 @@ export default function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatie
       <div className={styles.modal}>
         
         <div className={styles.header}>
-          <h2>New Patient</h2>
+          <h2>{initialData ? 'Edit Patient' : 'New Patient'}</h2>
           <button onClick={onClose} className={styles.closeBtn}>
             <X size={20} />
           </button>
@@ -232,7 +286,7 @@ export default function AddPatientModal({ isOpen, onClose, onSuccess }: AddPatie
           </div>
 
           <button type="submit" disabled={loading} className={styles.submitBtn}>
-            {loading ? 'Saving...' : 'Add Patient'}
+            {loading ? 'Saving...' : (initialData ? 'Update Patient' : 'Add Patient')}
           </button>
         </form>
       </div>
