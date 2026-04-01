@@ -91,7 +91,6 @@ export default function ScoliosisResultDisplay({ result }: Props) {
             </div>
          </div>
          <div className={styles.barLabels}>
-             <span style={{left: '0%'}}>0</span>
              <span style={{left: '20%'}}>0.5</span>
              <span style={{left: '60%'}}>1.5</span>
              <span style={{left: '100%'}}>2.5+</span>
