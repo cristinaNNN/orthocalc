@@ -1,0 +1,83 @@
+.footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 1.5rem 0;
+  margin-top: 4rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.leftSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--primary);
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.dot {
+  color: var(--foreground);
+  opacity: 0.2;
+}
+
+.copyright {
+  color: var(--foreground);
+  opacity: 0.4;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.rightSection a {
+  color: var(--foreground);
+  opacity: 0.6;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.rightSection a:hover {
+  opacity: 1;
+  color: var(--primary);
+}
+
+.badge {
+  color: var(--primary);
+  background: rgba(var(--primary), 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 640px) {
+  .container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+  
+  .rightSection {
+    gap: 1rem;
+  }
+}

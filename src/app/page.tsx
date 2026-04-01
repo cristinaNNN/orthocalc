@@ -6,18 +6,18 @@ import { Patient } from '@/types'
 import AddPatientModal from '@/components/patients/AddPatientModal'
 import HistoryTimelineModal from '@/components/history/HistoryTimelineModal'
 import Link from 'next/link'
-import { Trash2, Pencil, BookOpenText } from 'lucide-react'
+import { Trash2, Pencil, BookOpenText, Plus } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme/ThemeToggle'
+import { useModal } from '@/lib/context/ModalContext'
 import styles from './page.module.css'
 
 export default function Home() {
   const supabase = createClient()
   const [user, setUser] = useState<any>(null)
   const [patients, setPatients] = useState<Patient[]>([])
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
-  const [editingPatient, setEditingPatient] = useState<Patient | null>(null)
   const [loading, setLoading] = useState(true)
+  const { openAddPatientModal, refreshTrigger } = useModal()
   
   // Login Form State
   const [email, setEmail] = useState('')
@@ -26,7 +26,7 @@ export default function Home() {
 
   useEffect(() => {
     checkUser()
-  }, [])
+  }, [refreshTrigger])
 
   const checkUser = async () => {
     const { data: { user } } = await supabase.auth.getUser()
@@ -93,13 +93,7 @@ export default function Home() {
   const handleEditPatient = (e: React.MouseEvent, patient: Patient) => {
     e.preventDefault()
     e.stopPropagation()
-    setEditingPatient(patient)
-    setIsModalOpen(true)
-  }
-
-  const handleModalClose = () => {
-    setIsModalOpen(false)
-    setEditingPatient(null)
+    openAddPatientModal(patient)
   }
 
   if (loading) return <div className={styles.loading}>Loading System...</div>
@@ -144,22 +138,25 @@ export default function Home() {
   // --- VIEW 2: DASHBOARD ---
   return (
     <main className={styles.main}>
-      <header className={styles.header}>
+      <header className={styles.contentHeader}>
         <div className={styles.titleGroup}>
-          <h1>Patient List</h1>
-          <span className={styles.doctorBadge}>Dr. {user.email}</span>
+          <h1 className={styles.pageTitle}>Patient List</h1>
         </div>
         <div className={styles.actions}>
-          <ThemeToggle />
           <button 
             onClick={() => setIsHistoryModalOpen(true)} 
-            className={styles.historyBtn}
+            className={styles.historyBtnIcon}
             title="View Clinical Journal"
           >
             <BookOpenText size={20} />
           </button>
-          <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
-          <button onClick={() => setIsModalOpen(true)} className={styles.primaryBtn}>+ Add Patient</button>
+          <button 
+            onClick={() => openAddPatientModal()} 
+            className={styles.addBtn}
+          >
+            <Plus size={18} />
+            <span>Add Patient</span>
+          </button>
         </div>
       </header>
 
@@ -167,7 +164,7 @@ export default function Home() {
         {patients.length === 0 ? (
           <div className={styles.emptyState}>
             <p>No patients found.</p>
-            <button onClick={() => setIsModalOpen(true)}>Add your first patient</button>
+            <button onClick={() => openAddPatientModal()}>Add your first patient</button>
           </div>
         ) : (
           <div className={styles.grid}>
@@ -206,13 +203,6 @@ export default function Home() {
           </div>
         )}
       </div>
-
-      <AddPatientModal 
-        isOpen={isModalOpen} 
-        initialData={editingPatient}
-        onClose={handleModalClose} 
-        onSuccess={() => fetchPatients(user.id)}
-      />
 
       <HistoryTimelineModal 
         isOpen={isHistoryModalOpen}

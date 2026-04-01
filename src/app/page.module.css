@@ -5,21 +5,26 @@
   min-height: 100vh;
 }
 
-/* --- Header Section --- */
-.header {
+/* --- Content Header Section --- */
+.contentHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
   padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
 }
 
-.titleGroup h1 {
+.pageTitle {
   margin: 0;
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  color: var(--foreground);
+}
+
+.pageSubtitle {
+  margin: 4px 0 0 0;
+  font-size: 1rem;
+  color: var(--foreground);
+  opacity: 0.6;
 }
 
 .doctorBadge {
@@ -84,26 +89,53 @@
   text-decoration: underline;
 }
 
-.historyBtn {
-  background: var(--background);
+.historyBtnIcon {
+  background: var(--surface);
   border: 1px solid var(--border);
   color: #64748b;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s;
-  margin-right: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.historyBtn:hover {
+.historyBtnIcon:hover {
   background: #fffbeb;
   color: #b45309;
   border-color: #fcd34d;
   box-shadow: 0 4px 12px rgba(120, 53, 15, 0.1);
+  transform: translateY(-1px);
+}
+
+.addBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--primary);
+  color: #ffffff;
+  border: none;
+  padding: 0 1.25rem;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(var(--primary), 0.2);
+}
+
+.addBtn:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(var(--primary), 0.3);
+}
+
+.addBtn:active {
+  transform: translateY(0);
 }
 
 /* --- Patient Grid --- */
@@ -132,8 +164,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
 }
 

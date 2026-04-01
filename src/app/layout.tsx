@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 // IMPORT KATEX CSS GLOBALLY
 import 'katex/dist/katex.min.css'; 
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { AppLayout } from "@/components/layout/AppLayout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,15 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <AppLayout modal={modal}>
           {children}
-          {modal}
-        </ThemeProvider>
+        </AppLayout>
       </body>
     </html>
   );
