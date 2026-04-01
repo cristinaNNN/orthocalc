@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Patient } from '@/types'
 import AddPatientModal from '@/components/patients/AddPatientModal'
+import HistoryTimelineModal from '@/components/history/HistoryTimelineModal'
 import Link from 'next/link'
-import { Trash2, Pencil } from 'lucide-react'
+import { Trash2, Pencil, BookOpenText } from 'lucide-react'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
   const [user, setUser] = useState<any>(null)
   const [patients, setPatients] = useState<Patient[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
   const [editingPatient, setEditingPatient] = useState<Patient | null>(null)
   const [loading, setLoading] = useState(true)
   
@@ -147,6 +149,13 @@ export default function Home() {
           <span className={styles.doctorBadge}>Dr. {user.email}</span>
         </div>
         <div className={styles.actions}>
+          <button 
+            onClick={() => setIsHistoryModalOpen(true)} 
+            className={styles.historyBtn}
+            title="View Clinical Journal"
+          >
+            <BookOpenText size={20} />
+          </button>
           <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
           <button onClick={() => setIsModalOpen(true)} className={styles.primaryBtn}>+ Add Patient</button>
         </div>
@@ -201,6 +210,11 @@ export default function Home() {
         initialData={editingPatient}
         onClose={handleModalClose} 
         onSuccess={() => fetchPatients(user.id)}
+      />
+
+      <HistoryTimelineModal 
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
       />
     </main>
   )

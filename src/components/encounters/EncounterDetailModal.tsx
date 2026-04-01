@@ -83,6 +83,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
         setIsAdding(false)
         setEditingObsId(null)
         setInitialInputs(null)
+      } else {
+        console.error('Error updating observation:', error)
+        alert(`Error updating calculation: ${error.message}`)
       }
     } else {
       // INSERT
@@ -98,6 +101,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
       if (!error) {
         await fetchObservations()
         setIsAdding(false)
+      } else {
+        console.error('Error inserting observation:', error)
+        alert(`Error saving calculation: ${error.message}`)
       }
     }
     setLoading(false)
@@ -127,6 +133,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
     if (!error) {
       setObservations(prev => prev.filter(o => o.id !== id))
       if (expandedObs === id) setExpandedObs(null)
+    } else {
+      console.error('Error deleting observation:', error)
+      alert(`Error deleting calculation: ${error.message}`)
     }
   }
 

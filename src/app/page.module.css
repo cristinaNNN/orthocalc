@@ -84,6 +84,28 @@
   text-decoration: underline;
 }
 
+.historyBtn {
+  background: white;
+  border: 1px solid var(--border);
+  color: #64748b;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+
+.historyBtn:hover {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fcd34d;
+  box-shadow: 0 4px 12px rgba(120, 53, 15, 0.1);
+}
+
 /* --- Patient Grid --- */
 .grid {
   display: grid;
