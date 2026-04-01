@@ -12,6 +12,42 @@
   padding: 32px 24px;
   background-color: var(--background);
   border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerActions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.editPatientBtn,
+.deletePatientBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background-color: #f8fafc;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.editPatientBtn:hover {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border-color: #dbeafe;
+}
+
+.deletePatientBtn:hover {
+  background-color: #fef2f2;
+  color: #ef4444;
+  border-color: #fee2e2;
 }
 
 .headerContent {
@@ -166,6 +202,50 @@
   background: #f8fafc;
   padding: 0.75rem 1rem;
   border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.encounterActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editEncounterBtn,
+.deleteEncounterBtn {
+  background: #f8fafc;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.2s;
+}
+
+.encounterCard:hover .editEncounterBtn,
+.encounterCard:hover .deleteEncounterBtn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.editEncounterBtn:hover {
+  background: #eff6ff;
+  color: #3b82f6;
+  border-color: #dbeafe;
+}
+
+.deleteEncounterBtn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: #fee2e2;
 }
 
 .encounterType {

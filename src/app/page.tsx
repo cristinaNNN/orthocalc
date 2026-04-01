@@ -4,7 +4,10 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Patient } from '@/types'
 import AddPatientModal from '@/components/patients/AddPatientModal'
+import HistoryTimelineModal from '@/components/history/HistoryTimelineModal'
 import Link from 'next/link'
+import { Trash2, Pencil, BookOpenText } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -12,6 +15,8 @@ export default function Home() {
   const [user, setUser] = useState<any>(null)
   const [patients, setPatients] = useState<Patient[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false)
+  const [editingPatient, setEditingPatient] = useState<Patient | null>(null)
   const [loading, setLoading] = useState(true)
   
   // Login Form State
@@ -65,6 +70,38 @@ export default function Home() {
     setPatients([])
   }
 
+  const handleDeletePatient = async (e: React.MouseEvent, patientId: string) => {
+    e.preventDefault()
+    e.stopPropagation()
+    
+    if (!confirm('Are you sure you want to delete this patient and all their clinical history?')) {
+      return
+    }
+
+    const { error } = await supabase
+      .from('patients')
+      .delete()
+      .eq('id', patientId)
+
+    if (error) {
+      alert('Error deleting patient: ' + error.message)
+    } else {
+      setPatients(prev => prev.filter(p => p.id !== patientId))
+    }
+  }
+
+  const handleEditPatient = (e: React.MouseEvent, patient: Patient) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setEditingPatient(patient)
+    setIsModalOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+    setEditingPatient(null)
+  }
+
   if (loading) return <div className={styles.loading}>Loading System...</div>
 
   // --- VIEW 1: LOGIN SCREEN ---
@@ -113,6 +150,14 @@ export default function Home() {
           <span className={styles.doctorBadge}>Dr. {user.email}</span>
         </div>
         <div className={styles.actions}>
+          <ThemeToggle />
+          <button 
+            onClick={() => setIsHistoryModalOpen(true)} 
+            className={styles.historyBtn}
+            title="View Clinical Journal"
+          >
+            <BookOpenText size={20} />
+          </button>
           <button onClick={handleLogout} className={styles.logoutBtn}>Logout</button>
           <button onClick={() => setIsModalOpen(true)} className={styles.primaryBtn}>+ Add Patient</button>
         </div>
@@ -130,8 +175,26 @@ export default function Home() {
               <Link href={`/patient/${patient.id}`} key={patient.id} style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div className={styles.card}>
                   <div className={styles.cardHeader}>
-                    <h3>{patient.family_name}, {patient.first_name}</h3>
-                    <span className={styles.genderBadge}>{patient.gender === 'Male' ? 'M' : 'F'}</span>
+                    <div className={styles.nameGroup}>
+                      <h3>{patient.family_name}, {patient.first_name}</h3>
+                      <span className={styles.genderBadge}>{patient.gender === 'Male' ? 'M' : 'F'}</span>
+                    </div>
+                    <div className={styles.cardActions}>
+                      <button 
+                        className={styles.editBtn}
+                        onClick={(e) => handleEditPatient(e, patient)}
+                        title="Edit Patient"
+                      >
+                        <Pencil size={16} />
+                      </button>
+                      <button 
+                        className={styles.deleteBtn}
+                        onClick={(e) => handleDeletePatient(e, patient.id)}
+                        title="Delete Patient"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                   <div className={styles.cardBody}>
                     <p><strong>CNP:</strong> {patient.cnp || 'N/A'}</p>
@@ -146,8 +209,14 @@ export default function Home() {
 
       <AddPatientModal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
+        initialData={editingPatient}
+        onClose={handleModalClose} 
         onSuccess={() => fetchPatients(user.id)}
+      />
+
+      <HistoryTimelineModal 
+        isOpen={isHistoryModalOpen}
+        onClose={() => setIsHistoryModalOpen(false)}
       />
     </main>
   )

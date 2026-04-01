@@ -4,7 +4,9 @@
 import { useEffect, useState, useCallback } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { Patient, Encounter } from '@/types'
-import { User, Activity, Calendar, Plus, ChevronRight } from 'lucide-react'
+import { User, Activity, Calendar, Plus, ChevronRight, Trash2, Pencil } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import AddPatientModal from '../patients/AddPatientModal'
 import AddEncounterModal from '../encounters/AddEncounterModal'
 import EncounterDetailModal from '../encounters/EncounterDetailModal'
 import styles from './PatientDetailView.module.css'
@@ -17,9 +19,13 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<Tab>('overview')
   
+  const router = useRouter()
+  
   // Modal States
   const [isEncounterModalOpen, setIsEncounterModalOpen] = useState(false)
+  const [isEditPatientModalOpen, setIsEditPatientModalOpen] = useState(false)
   const [selectedEncounter, setSelectedEncounter] = useState<Encounter | null>(null)
+  const [editingEncounter, setEditingEncounter] = useState<Encounter | null>(null)
 
   const fetchData = useCallback(async () => {
     try {
@@ -54,6 +60,55 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
     fetchData()
   }, [fetchData])
 
+  const handleDeletePatient = async () => {
+    if (!patient) return
+    if (!confirm('Are you sure you want to delete this patient and all their clinical history? This cannot be undone.')) {
+      return
+    }
+
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('patients')
+      .delete()
+      .eq('id', patient.id)
+
+    if (error) {
+      alert('Error deleting patient: ' + error.message)
+    } else {
+      router.push('/')
+    }
+  }
+
+  const handleDeleteEncounter = async (e: React.MouseEvent, encounterId: string) => {
+    e.stopPropagation() // Prevent opening the detail modal
+    if (!confirm('Are you sure you want to delete this encounter and all its observations?')) {
+      return
+    }
+
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('encounters')
+      .delete()
+      .eq('id', encounterId)
+
+    if (error) {
+      alert('Error deleting encounter: ' + error.message)
+    } else {
+      setEncounters(prev => prev.filter(enc => enc.id !== encounterId))
+    }
+  }
+
+  const handleEditEncounter = (e: React.MouseEvent, encounter: Encounter) => {
+    e.stopPropagation()
+    setEditingEncounter(encounter)
+    setIsEncounterModalOpen(true)
+  }
+
+  const handleEncounterModalClose = () => {
+    setIsEncounterModalOpen(false)
+    setEditingEncounter(null)
+  }
+
   if (loading) return <div className={styles.content}>Loading Record...</div>
   if (!patient) return <div className={styles.content}>Patient not found.</div>
 
@@ -71,6 +126,22 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
               {patient.first_name} {patient.family_name}
             </h2>
           </div>
+        </div>
+        <div className={styles.headerActions}>
+          <button 
+            className={styles.editPatientBtn}
+            onClick={() => setIsEditPatientModalOpen(true)}
+            title="Edit Patient Details"
+          >
+            <Pencil size={20} />
+          </button>
+          <button 
+            className={styles.deletePatientBtn}
+            onClick={handleDeletePatient}
+            title="Delete Patient Record"
+          >
+            <Trash2 size={20} />
+          </button>
         </div>
       </div>
 
@@ -143,7 +214,22 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
                           <span>{new Date(encounter.encounter_date).toLocaleDateString()}</span>
                           <span className={styles.typeTag}>{encounter.encounter_type}</span>
                         </div>
-                        <ChevronRight size={16} color="#94a3b8" />
+                        <div className={styles.encounterActions}>
+                          <button 
+                            className={styles.editEncounterBtn}
+                            onClick={(e) => handleEditEncounter(e, encounter)}
+                            title="Edit Encounter"
+                          >
+                            <Pencil size={16} />
+                          </button>
+                          <button 
+                            className={styles.deleteEncounterBtn}
+                            onClick={(e) => handleDeleteEncounter(e, encounter.id)}
+                            title="Delete Encounter"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
                       </div>
                       <div className={styles.encounterBody}>
                         <h4>{encounter.primary_encounter_reason}</h4>
@@ -161,10 +247,18 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
       </div>
 
       {/* Modals */}
+      <AddPatientModal
+        isOpen={isEditPatientModalOpen}
+        initialData={patient}
+        onClose={() => setIsEditPatientModalOpen(false)}
+        onSuccess={fetchData}
+      />
+
       <AddEncounterModal
         patientId={patient.id}
         isOpen={isEncounterModalOpen}
-        onClose={() => setIsEncounterModalOpen(false)}
+        initialData={editingEncounter}
+        onClose={handleEncounterModalClose}
         onSuccess={fetchData}
       />
 

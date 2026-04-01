@@ -8,7 +8,7 @@ import { BmiResult } from '@/lib/engines/bmi_engine'
 import { PaleyHeightResult } from '@/lib/engines/paley_engine'
 import { ScoliosisResult } from '@/lib/engines/scoliosis_engine'
 
-import { X, Plus, Calculator, ChevronDown, ChevronUp, Trash2 } from 'lucide-react'
+import { X, Plus, Calculator, ChevronDown, ChevronUp, Trash2, Pencil } from 'lucide-react'
 
 // Calculators
 import BMICalculator from '../calculators/BMICalculator'
@@ -35,12 +35,18 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
   const [selectedCalc, setSelectedCalc] = useState('bmi')
   const [loading, setLoading] = useState(false)
   const [expandedObs, setExpandedObs] = useState<string | null>(null)
+  
+  // Edit State
+  const [editingObsId, setEditingObsId] = useState<string | null>(null)
+  const [initialInputs, setInitialInputs] = useState<any>(null)
 
   useEffect(() => {
     if (encounter && isOpen) {
       fetchObservations()
       setIsAdding(false)
       setExpandedObs(null)
+      setEditingObsId(null)
+      setInitialInputs(null)
     }
   }, [encounter, isOpen])
 
@@ -60,20 +66,61 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
     setLoading(true)
     
     const supabase = createClient()
-    const { error } = await supabase.from('observations').insert([
-      {
-        encounter_id: encounter.id,
-        calculation_type: data.calculation_type,
-        inputs: data.inputs,
-        results: data.results
-      }
-    ])
+    
+    if (editingObsId) {
+      // UPDATE
+      const { error } = await supabase
+        .from('observations')
+        .update({
+          inputs: data.inputs,
+          results: data.results,
+          calculation_type: data.calculation_type
+        })
+        .eq('id', editingObsId)
 
-    if (!error) {
-      await fetchObservations()
-      setIsAdding(false)
+      if (!error) {
+        await fetchObservations()
+        setIsAdding(false)
+        setEditingObsId(null)
+        setInitialInputs(null)
+      } else {
+        console.error('Error updating observation:', error)
+        alert(`Error updating calculation: ${error.message}`)
+      }
+    } else {
+      // INSERT
+      const { error } = await supabase.from('observations').insert([
+        {
+          encounter_id: encounter.id,
+          calculation_type: data.calculation_type,
+          inputs: data.inputs,
+          results: data.results
+        }
+      ])
+
+      if (!error) {
+        await fetchObservations()
+        setIsAdding(false)
+      } else {
+        console.error('Error inserting observation:', error)
+        alert(`Error saving calculation: ${error.message}`)
+      }
     }
     setLoading(false)
+  }
+
+  const handleEdit = (obs: Observation, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setEditingObsId(obs.id)
+    setInitialInputs(obs.inputs)
+    setSelectedCalc(obs.calculation_type || 'bmi')
+    setIsAdding(true)
+  }
+
+  const handleCancelAdd = () => {
+    setIsAdding(false)
+    setEditingObsId(null)
+    setInitialInputs(null)
   }
 
   const handleDelete = async (id: string, e: React.MouseEvent) => {
@@ -86,6 +133,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
     if (!error) {
       setObservations(prev => prev.filter(o => o.id !== id))
       if (expandedObs === id) setExpandedObs(null)
+    } else {
+      console.error('Error deleting observation:', error)
+      alert(`Error deleting calculation: ${error.message}`)
     }
   }
 
@@ -149,7 +199,7 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                   <option value="scoliosis_risk">Scoliosis Progression Risk (Lonstein)</option>
                   <option value="lld">Leg Length Discrepancy (LLD)</option>
                 </select>
-                <button className={styles.cancelBtnText} onClick={() => setIsAdding(false)}>Cancel</button>
+                <button className={styles.cancelBtnText} onClick={handleCancelAdd}>Cancel</button>
               </div>
 
               {selectedCalc === 'bmi' && patient && (
@@ -157,8 +207,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                   dob={patient.date_of_birth} 
                   gender={patient.gender}
                   referenceDate={encounter.encounter_date}
+                  initialInputs={initialInputs}
                   onSave={handleSaveObservation}
-                  onCancel={() => setIsAdding(false)}
+                  onCancel={handleCancelAdd}
                 />
               )}
 
@@ -167,8 +218,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                   dob={patient.date_of_birth}
                   gender={patient.gender}
                   referenceDate={encounter.encounter_date}
+                  initialInputs={initialInputs}
                   onSave={handleSaveObservation}
-                  onCancel={() => setIsAdding(false)}
+                  onCancel={handleCancelAdd}
                 />
               )}
 
@@ -176,8 +228,9 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                 <ScoliosisCalculator
                   dob={patient.date_of_birth}
                   referenceDate={encounter.encounter_date}
+                  initialInputs={initialInputs}
                   onSave={handleSaveObservation}
-                  onCancel={() => setIsAdding(false)}
+                  onCancel={handleCancelAdd}
                 />
               )}
 
@@ -185,9 +238,11 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                 <LLDCalculator
                   patientAgeYears={getFractionalAgeYears(patient.date_of_birth, encounter.encounter_date)}
                   patientGender={patient.gender || 'Unknown'}
+                  initialInputs={initialInputs}
                   onSave={async (inputs, results) => {
                     await handleSaveObservation({ inputs, results, calculation_type: 'lld' })
                   }}
+                  onCancel={handleCancelAdd}
                 />
               )}
             </div>
@@ -273,6 +328,14 @@ export default function EncounterDetailModal({ encounter, patient, isOpen, onClo
                           {new Date(obs.observation_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                         </span>
                         
+                        <button 
+                          className={styles.editBtn}
+                          onClick={(e) => handleEdit(obs, e)}
+                          title="Edit Calculation"
+                        >
+                          <Pencil size={16} />
+                        </button>
+
                         <button 
                           className={styles.deleteBtn}
                           onClick={(e) => handleDelete(obs.id, e)}

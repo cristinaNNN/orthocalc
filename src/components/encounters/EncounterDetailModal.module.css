@@ -209,10 +209,11 @@
   font-weight: 500;
 }
 
+.editBtn,
 .deleteBtn {
-  background: #fee2e2;
-  color: #ef4444;
-  border: none;
+  background: #f8fafc;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
   width: 32px;
   height: 32px;
   border-radius: 6px;
@@ -225,15 +226,24 @@
   transition: all 0.2s;
 }
 
+.observationCard:hover .editBtn,
+.observationCard.expanded .editBtn,
 .observationCard:hover .deleteBtn,
 .observationCard.expanded .deleteBtn {
   opacity: 1;
   transform: scale(1);
 }
 
+.editBtn:hover {
+  background-color: #eff6ff !important;
+  color: #3b82f6 !important;
+  border-color: #dbeafe !important;
+}
+
 .deleteBtn:hover {
-  background: #ef4444;
-  color: white;
+  background-color: #fef2f2 !important;
+  color: #ef4444 !important;
+  border-color: #fee2e2 !important;
 }
 
 .chevron {

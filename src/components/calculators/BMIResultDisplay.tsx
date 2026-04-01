@@ -127,11 +127,9 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
              </div>
           </div>
           <div className={styles.barLabels}>
-            <span style={{left: '0%'}}>0</span>
             <span style={{left: '5%'}}>5th</span>
             <span style={{left: '85%'}}>85th</span>
             <span style={{left: '95%'}}>95th</span>
-            <span style={{left: '100%'}}>100</span>
           </div>
         </div>
       )}

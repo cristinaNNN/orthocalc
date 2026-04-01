@@ -84,6 +84,28 @@
   text-decoration: underline;
 }
 
+.historyBtn {
+  background: var(--background);
+  border: 1px solid var(--border);
+  color: #64748b;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 8px;
+}
+
+.historyBtn:hover {
+  background: #fffbeb;
+  color: #b45309;
+  border-color: #fcd34d;
+  box-shadow: 0 4px 12px rgba(120, 53, 15, 0.1);
+}
+
 /* --- Patient Grid --- */
 .grid {
   display: grid;
@@ -115,11 +137,61 @@
   border-bottom: 1px solid var(--border);
 }
 
-.cardHeader h3 {
+.nameGroup {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nameGroup h3 {
   margin: 0;
   font-size: 1.1rem;
   font-weight: 600;
 }
+
+.cardActions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.editBtn,
+.deleteBtn {
+  background: var(--surface);
+  color: #94a3b8;
+  border: 1px solid var(--border);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.card:hover .editBtn,
+.card:hover .deleteBtn {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.editBtn:hover {
+  background: #eff6ff !important;
+  color: #3b82f6 !important;
+  border-color: #dbeafe !important;
+}
+
+.deleteBtn:hover {
+  background: #fef2f2 !important;
+  color: #ef4444 !important;
+  border-color: #fee2e2 !important;
+}
+
+/* Removed redundant deleteBtn styles */
 
 .genderBadge {
   background-color: var(--background);
@@ -173,7 +245,7 @@
   border: 1px solid var(--border);
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 .loginTitle {

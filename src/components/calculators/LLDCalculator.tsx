@@ -11,11 +11,12 @@ import styles from './LLDCalculator.module.css'
 interface LLDCalculatorProps {
   patientAgeYears: number
   patientGender: string
+  initialInputs?: any
   onSave?: (inputs: any, results: any) => Promise<void>
   onCancel?: () => void
 }
 
-export default function LLDCalculator({ patientAgeYears, patientGender, onSave, onCancel }: LLDCalculatorProps) {
+export default function LLDCalculator({ patientAgeYears, patientGender, initialInputs, onSave, onCancel }: LLDCalculatorProps) {
   const [mode, setMode] = useState<'CONGENITAL' | 'DEVELOPMENTAL'>('CONGENITAL')
   const [refDate, setRefDate] = useState(new Date().toISOString().split('T')[0])
   const [priorDate, setPriorDate] = useState('')
@@ -50,6 +51,56 @@ export default function LLDCalculator({ patientAgeYears, patientGender, onSave, 
   const [result, setResult] = useState<LLDResults | null>(null)
   const [engineInputs, setEngineInputs] = useState<CongenitalLLDInputs | DevelopmentalLLDInputs | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    if (initialInputs) {
+      // Determine mode
+      const isCongenital = initialInputs.age_years !== undefined
+      setMode(isCongenital ? 'CONGENITAL' : 'DEVELOPMENTAL')
+      
+      const refD = isCongenital ? initialInputs.reference_date : initialInputs.current_xray_date
+      if (refD) setRefDate(refD)
+      
+      const current = initialInputs.current_lengths
+      if (current) {
+        setCFemR(current.femur_right ?? '')
+        setCFemL(current.femur_left ?? '')
+        setCTibR(current.tibia_right ?? '')
+        setCTibL(current.tibia_left ?? '')
+      }
+      
+      setFootDiff(initialInputs.foot_height_diff_cm ?? '')
+      setFootSide(initialInputs.foot_diff_side ?? 'NONE')
+      
+      if (isCongenital) {
+        const lengthenings = initialInputs.previous_lengthening_cm
+        if (lengthenings) {
+          const hasAny = Object.values(lengthenings).some(v => (v as number) > 0)
+          setHasLengthening(hasAny)
+          setLFemR(lengthenings.femur_right ?? '')
+          setLFemL(lengthenings.femur_left ?? '')
+          setLTibR(lengthenings.tibia_right ?? '')
+          setLTibL(lengthenings.tibia_left ?? '')
+        }
+      } else {
+        setPriorDate(initialInputs.prior_xray_date || '')
+        const prior = initialInputs.prior_lengths
+        if (prior) {
+          setPFemR(prior.femur_right ?? '')
+          setPFemL(prior.femur_left ?? '')
+          setPTibR(prior.tibia_right ?? '')
+          setPTibL(prior.tibia_left ?? '')
+        }
+      }
+      
+      // Handle Bone Age
+      const ageUsed = isCongenital ? initialInputs.age_years : initialInputs.age_years_current
+      if (Math.abs(ageUsed - patientAgeYears) > 0.01) {
+        setUseBoneAge(true)
+        setManualBoneAge(ageUsed.toString())
+      }
+    }
+  }, [initialInputs, patientAgeYears])
 
   // Real-time calculation effect
   useEffect(() => {

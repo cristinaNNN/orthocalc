@@ -12,11 +12,12 @@ interface PaleyHeightCalculatorProps {
   dob: string | null
   gender: string | null
   referenceDate: string 
+  initialInputs?: any
   onSave: (data: { inputs: any, results: any, calculation_type: string }) => void
   onCancel: () => void
 }
 
-export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSave, onCancel }: PaleyHeightCalculatorProps) {
+export default function PaleyHeightCalculator({ dob, gender, referenceDate, initialInputs, onSave, onCancel }: PaleyHeightCalculatorProps) {
   const [height, setHeight] = useState('')
   const [calcDate, setCalcDate] = useState(referenceDate ? new Date(referenceDate).toISOString().split('T')[0] : '')
   
@@ -25,6 +26,15 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, onSa
   const [manualBoneAge, setManualBoneAge] = useState('')
 
   const [result, setResult] = useState<PaleyHeightResult | null>(null)
+
+  useEffect(() => {
+    if (initialInputs) {
+      setHeight(initialInputs.height_cm || '')
+      setCalcDate(initialInputs.reference_date || '')
+      setUseBoneAge(!!initialInputs.use_bone_age)
+      setManualBoneAge(initialInputs.manual_bone_age || '')
+    }
+  }, [initialInputs])
 
   const context = useMemo(() => 
     getDemographicContext(dob, calcDate), 

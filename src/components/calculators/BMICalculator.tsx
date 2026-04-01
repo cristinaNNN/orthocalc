@@ -10,18 +10,29 @@ import styles from './BMICalculator.module.css'
 interface BMICalculatorProps {
   dob: string | null
   gender: string | null
-  referenceDate: string // The default (Encounter date)
+  referenceDate: string
+  initialInputs?: any
   onSave: (data: { inputs: any, results: any, calculation_type: string }) => void
   onCancel: () => void
 }
 
-export default function BMICalculator({ dob, gender, referenceDate, onSave, onCancel }: BMICalculatorProps) {
+export default function BMICalculator({ dob, gender, referenceDate, initialInputs, onSave, onCancel }: BMICalculatorProps) {
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
   // Initialize with the encounter date, but allow user to change it
   const [calcDate, setCalcDate] = useState(referenceDate ? new Date(referenceDate).toISOString().split('T')[0] : '')
   
   const [result, setResult] = useState<BmiResult | null>(null)
+
+  useEffect(() => {
+    if (initialInputs) {
+      setHeight(initialInputs.height_cm || '')
+      setWeight(initialInputs.weight_kg || '')
+      if (initialInputs.demographics_snapshot?.reference_date) {
+        setCalcDate(initialInputs.demographics_snapshot.reference_date)
+      }
+    }
+  }, [initialInputs])
 
   // 1. Context depends on the SELECTED date
   const context = useMemo(() => 
