@@ -6,14 +6,12 @@
   --border: #e2e8f0;     /* Slate 200 */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020617; /* Slate 950 */
-    --foreground: #f8fafc; /* Slate 50 */
-    --primary: #3b82f6;    /* Blue 500 */
-    --surface: #0f172a;    /* Slate 900 */
-    --border: #1e293b;     /* Slate 800 */
-  }
+.dark {
+  --background: #020617; /* Slate 950 */
+  --foreground: #f8fafc; /* Slate 50 */
+  --primary: #3b82f6;    /* Blue 500 */
+  --surface: #0f172a;    /* Slate 900 */
+  --border: #1e293b;     /* Slate 800 */
 }
 
 body {

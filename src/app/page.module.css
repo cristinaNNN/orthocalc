@@ -85,7 +85,7 @@
 }
 
 .historyBtn {
-  background: white;
+  background: var(--background);
   border: 1px solid var(--border);
   color: #64748b;
   width: 40px;
@@ -157,9 +157,9 @@
 
 .editBtn,
 .deleteBtn {
-  background: #f8fafc;
+  background: var(--surface);
   color: #94a3b8;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--border);
   width: 32px;
   height: 32px;
   border-radius: 6px;
@@ -245,7 +245,7 @@
   border: 1px solid var(--border);
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 .loginTitle {

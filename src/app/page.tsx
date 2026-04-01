@@ -7,6 +7,7 @@ import AddPatientModal from '@/components/patients/AddPatientModal'
 import HistoryTimelineModal from '@/components/history/HistoryTimelineModal'
 import Link from 'next/link'
 import { Trash2, Pencil, BookOpenText } from 'lucide-react'
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import styles from './page.module.css'
 
 export default function Home() {
@@ -149,6 +150,7 @@ export default function Home() {
           <span className={styles.doctorBadge}>Dr. {user.email}</span>
         </div>
         <div className={styles.actions}>
+          <ThemeToggle />
           <button 
             onClick={() => setIsHistoryModalOpen(true)} 
             className={styles.historyBtn}
