@@ -6,20 +6,22 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.7); /* Standardized overlay */
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  backdrop-filter: blur(4px);
 }
 
 .modal {
-  background-color: var(--surface);
+  background-color: var(--card);
+  border: 1px solid var(--border);
   padding: 30px;
   border-radius: 12px;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
 }
 
 .header {
@@ -39,13 +41,15 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #666;
+  color: var(--muted-foreground);
   padding: 4px;
   border-radius: 4px;
+  transition: all 0.2s;
 }
 
 .closeBtn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: var(--secondary);
+  color: var(--foreground);
 }
 
 .form {
@@ -69,7 +73,7 @@
 .field label {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #666;
+  color: var(--muted-foreground);
 }
 
 .field input,
@@ -107,18 +111,18 @@
 .validationMsg {
   font-size: 0.8rem;
   margin-top: 4px;
-  color: #dc2626; /* Red for error */
+  color: var(--destructive); /* Theme destructive */
 }
 
 .validationMsg.success {
-  color: #16a34a; /* Green for success */
+  color: var(--success); /* Theme success */
 }
 
 /* ------------------------------------- */
 
 .submitBtn {
   background-color: var(--primary);
-  color: white;
+  color: var(--primary-foreground);
   padding: 12px;
   border: none;
   border-radius: 6px;
@@ -126,7 +130,7 @@
   font-weight: 600;
   cursor: pointer;
   margin-top: 10px;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .submitBtn:hover:not(:disabled) {
@@ -139,10 +143,27 @@
 }
 
 .error {
-  background-color: #fee2e2;
-  color: #dc2626;
+  background-color: var(--destructive);
+  opacity: 0.9;
+  color: var(--destructive-foreground);
   padding: 12px;
   border-radius: 6px;
   font-size: 0.9rem;
   margin-bottom: 20px;
+}
+
+.inputSuccess {
+  border-color: var(--success) !important;
+}
+
+.inputError {
+  border-color: var(--destructive) !important;
+}
+
+.iconSuccess {
+  color: var(--success);
+}
+
+.iconError {
+  color: var(--destructive);
 }

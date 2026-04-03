@@ -2,7 +2,8 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  background: rgba(var(--background), 0.8);
+  background: var(--card);
+  opacity: 0.95;
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   padding: 1rem 0;
@@ -78,7 +79,7 @@
   align-items: center;
   gap: 0.5rem;
   background: var(--primary);
-  color: #ffffff;
+  color: var(--primary-foreground);
   border: none;
   padding: 0.6rem 1.25rem;
   border-radius: 8px;
@@ -86,13 +87,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(var(--primary), 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .addBtn:hover {
   filter: brightness(1.1);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(var(--primary), 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .addBtn:active {
@@ -121,10 +122,10 @@
 }
 
 .logoutBtn:hover {
-  background: rgba(var(--foreground), 0.05);
-  border-color: var(--foreground);
+  background: var(--secondary);
+  border-color: var(--border);
   opacity: 1;
-  color: #dc2626; /* Red for logout theme */
+  color: var(--destructive); /* Red for logout theme */
 }
 
 @media (max-width: 768px) {

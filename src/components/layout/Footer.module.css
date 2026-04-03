@@ -61,7 +61,8 @@
 
 .badge {
   color: var(--primary);
-  background: rgba(var(--primary), 0.1);
+  background: var(--secondary);
+  border: 1px solid var(--border);
   padding: 0.3rem 0.8rem;
   border-radius: 9999px;
   font-size: 0.7rem;

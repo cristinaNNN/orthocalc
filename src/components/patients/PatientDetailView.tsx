@@ -176,15 +176,11 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
 
         {activeTab === 'clinical' && (
           <div>
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+             <div className={styles.clinicalHeader}>
                 <h3 className={styles.sectionTitle} style={{ margin: 0 }}>Active History</h3>
                 <button 
                   onClick={() => setIsEncounterModalOpen(true)}
-                  style={{ 
-                    background: 'var(--primary)', color: 'white', border: 'none', 
-                    padding: '8px 16px', borderRadius: '6px', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 500,
-                    display: 'flex', alignItems: 'center', gap: '8px'
-                  }}
+                  className={styles.newEncounterBtn}
                 >
                   <Plus size={16} />
                   New Encounter
@@ -192,13 +188,13 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
              </div>
 
              {encounters.length === 0 ? (
-               <div className={styles.placeholderCard}>
-                  <Activity size={32} style={{ opacity: 0.3, marginBottom: '8px' }} />
-                  <p style={{ margin: 0, fontWeight: 500 }}>No clinical history found</p>
-                  <p style={{ margin: 0, fontSize: '0.85rem' }}>
-                    Start a new examination or calculation.
-                  </p>
-               </div>
+                <div className={styles.placeholderCard}>
+                   <Activity size={32} className={styles.placeholderIcon} />
+                   <p className={styles.placeholderTitle}>No clinical history found</p>
+                   <p className={styles.placeholderSub}>
+                     Start a new examination or calculation.
+                   </p>
+                </div>
              ) : (
                <div className={styles.historyList}>
                  {encounters.map((encounter) => (
@@ -206,7 +202,6 @@ export default function PatientDetailView({ patientId }: { patientId: string }) 
                       key={encounter.id} 
                       className={styles.encounterCard}
                       onClick={() => setSelectedEncounter(encounter)}
-                      style={{ cursor: 'pointer' }}
                     >
                       <div className={styles.encounterHeader}>
                         <div className={styles.encounterType}>

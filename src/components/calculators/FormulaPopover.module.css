@@ -11,7 +11,7 @@
   background: none;
   border: none;
   cursor: pointer;
-  color: #94a3b8;
+  color: var(--muted-foreground);
   padding: 4px;
   border-radius: 50%;
   display: flex;
@@ -21,22 +21,21 @@
 }
 
 .triggerBtn:hover, .triggerBtn.active {
-  background-color: #e2e8f0;
-  color: #334155;
+  background-color: var(--secondary);
+  color: var(--foreground);
 }
 
 /* POPOVER STYLES */
 .popover {
   position: fixed; /* Fixed to viewport (Portal) */
   width: 300px;
-  background-color: #ffffff;
+  background-color: var(--popover);
   
   /* CONTRAST FIX: Stronger border & Shadow */
-  border: 1px solid #cbd5e1; /* Slate-300 */
+  border: 1px solid var(--border);
   box-shadow: 
-    0 20px 25px -5px rgba(0, 0, 0, 0.1), 
-    0 10px 10px -5px rgba(0, 0, 0, 0.04),
-    0 0 0 1px rgba(0,0,0,0.02);
+    0 20px 25px -5px rgba(0, 0, 0, 0.2), 
+    0 10px 10px -5px rgba(0, 0, 0, 0.1);
     
   border-radius: 8px;
   z-index: 9999; /* Always on top */
@@ -53,14 +52,14 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 14px;
-  background-color: #f1f5f9; /* Slate-100 */
-  border-bottom: 1px solid #e2e8f0;
+  background-color: var(--muted);
+  border-bottom: 1px solid var(--border);
 }
 
 .popoverTitle {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #1e293b; /* Slate-800 */
+  color: var(--popover-foreground);
   margin: 0;
 }
 
@@ -76,8 +75,8 @@
 }
 
 .closeBtn:hover {
-  background-color: rgba(0,0,0,0.05);
-  color: #ef4444;
+  background-color: var(--accent);
+  color: var(--destructive);
 }
 
 .popoverContent {
@@ -90,17 +89,17 @@
   padding: 10px;
   display: flex;
   justify-content: center;
-  background-color: #f8fafc; /* Very light gray background */
-  border: 1px solid #e2e8f0;
+  background-color: var(--muted);
+  border: 1px solid var(--border);
   border-radius: 6px;
-  color: #000000; /* Force Pure Black */
-  font-weight: 500; /* Slightly bolder */
+  color: var(--popover-foreground);
+  font-weight: 500;
 }
 
 .description {
   font-size: 0.85rem;
   line-height: 1.5;
-  color: #334155;
+  color: var(--muted-foreground);
   margin: 0;
 }
 
@@ -113,7 +112,7 @@
   margin-left: -6px;
   border-width: 6px;
   border-style: solid;
-  border-color: transparent transparent #ffffff transparent;
+  border-color: transparent transparent var(--popover) transparent;
 }
 
 .popover::before {
@@ -124,7 +123,7 @@
   margin-left: -7px;
   border-width: 7px;
   border-style: solid;
-  border-color: transparent transparent #cbd5e1 transparent;
+  border-color: transparent transparent var(--border) transparent;
   z-index: -1;
 }
 

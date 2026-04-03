@@ -169,7 +169,7 @@ export default function Home() {
         ) : (
           <div className={styles.grid}>
             {patients.map((patient) => (
-              <Link href={`/patient/${patient.id}`} key={patient.id} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <Link href={`/patient/${patient.id}`} key={patient.id} className={styles.cardLink}>
                 <div className={styles.card}>
                   <div className={styles.cardHeader}>
                     <div className={styles.nameGroup}>

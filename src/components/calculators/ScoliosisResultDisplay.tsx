@@ -56,7 +56,7 @@ export default function ScoliosisResultDisplay({ result }: Props) {
       {/* 2. MAIN RESULT (Risk Factor) */}
       <div className={styles.mainResult}>
          <div className={styles.valueGroup}>
-            <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+            <div className={`${styles.flexAlignCenter} ${styles.gap6}`}>
                <span className={styles.mainValue}>{result.risk_factor}</span>
                <FormulaPopover 
                   title="Progression Factor"
@@ -79,9 +79,9 @@ export default function ScoliosisResultDisplay({ result }: Props) {
 
          <div className={styles.barContainer}>
             <div className={styles.barSegments}>
-               <div className={`${styles.seg} ${styles.green}`} style={{width: '20%'}}></div>
-               <div className={`${styles.seg} ${styles.yellow}`} style={{width: '40%'}}></div>
-               <div className={`${styles.seg} ${styles.red}`} style={{width: '40%'}}></div>
+               <div className={`${styles.seg} ${styles.green} ${styles.seg20}`}></div>
+               <div className={`${styles.seg} ${styles.yellow} ${styles.seg40}`}></div>
+               <div className={`${styles.seg} ${styles.red} ${styles.seg40}`}></div>
             </div>
             <div 
                className={styles.marker}
@@ -91,9 +91,9 @@ export default function ScoliosisResultDisplay({ result }: Props) {
             </div>
          </div>
          <div className={styles.barLabels}>
-             <span style={{left: '20%'}}>0.5</span>
-             <span style={{left: '60%'}}>1.5</span>
-             <span style={{left: '100%'}}>2.5+</span>
+              <span className={styles.barLabel20}>0.5</span>
+              <span className={styles.barLabel60}>1.5</span>
+              <span className={styles.barLabel100}>2.5+</span>
          </div>
       </div>
 
@@ -110,19 +110,19 @@ export default function ScoliosisResultDisplay({ result }: Props) {
          <div className={styles.metaGrid}>
             <div className={styles.metaItem}>
                <span className={styles.metaLabel}>Equation</span>
-               <span className={styles.metaValue} style={{fontSize: '0.75rem'}}>
-                 (Cobb - 3×Risser) / Age
-               </span>
+                <span className={`${styles.metaValue} ${styles.textXs}`}>
+                  (Cobb - 3×Risser) / Age
+                </span>
             </div>
             <div className={styles.metaItem}>
-               <div style={{display: 'flex', alignItems: 'center'}}>
-                  <span className={styles.metaLabel}>Cobb</span>
-                  <FormulaPopover title="Cobb Angle" description="The degree of lateral curvature." />
-               </div>
+                <div className={styles.metaItemHeader}>
+                   <span className={styles.metaLabel}>Cobb</span>
+                   <FormulaPopover title="Cobb Angle" description="The degree of lateral curvature." />
+                </div>
                <span className={styles.metaValue}>{result.meta.cobb_angle}</span>
             </div>
             <div className={styles.metaItem}>
-               <div style={{display: 'flex', alignItems: 'center'}}>
+               <div className={styles.metaItemHeader}>
                   <span className={styles.metaLabel}>Risser</span>
                    <FormulaPopover title="Risser Sign" description="Grade of iliac apophysis ossification (0-5), indicating skeletal maturity." />
                </div>

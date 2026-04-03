@@ -40,7 +40,7 @@ export default function PaleyHeightResultDisplay({ result }: PaleyHeightResultDi
         </div>
         <div className={styles.measureItem}>
           <span className={styles.measureLabel}>Gender</span>
-          <span className={styles.measureValue} style={{textTransform: 'capitalize'}}>
+          <span className={`${styles.measureValue} ${styles.capitalize}`}>
             {result.meta.gender}
           </span>
         </div>
@@ -51,7 +51,7 @@ export default function PaleyHeightResultDisplay({ result }: PaleyHeightResultDi
       {/* 1. MAIN HEADLINE (Restored "Predicted Maturity") */}
       <div className={styles.mainResult}>
         <div className={styles.valueGroupColumn}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <div className={`${styles.flexAlignCenter} ${styles.gap6}`}>
                <span className={styles.labelSmall}>Predicted Maturity</span>
                <FormulaPopover 
                  title="Paley Prediction"
@@ -96,7 +96,7 @@ export default function PaleyHeightResultDisplay({ result }: PaleyHeightResultDi
         
         <div className={styles.metaGrid}>
           <div className={styles.metaItem}>
-            <div style={{display: 'flex', alignItems: 'center'}}>
+            <div className={styles.metaItemHeader}>
                <span className={styles.metaLabel}>Multiplier</span>
                <FormulaPopover 
                  title="Multiplier Coefficient"

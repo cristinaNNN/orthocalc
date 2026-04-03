@@ -105,7 +105,7 @@ export default function BMICalculator({ dob, gender, referenceDate, initialInput
         </div>
 
         {/* Spacer to align grid if needed, or we can span the date row */}
-        <div className={styles.inputGroup} style={{ visibility: 'hidden' }}></div>
+        <div className={`${styles.inputGroup} ${styles.hidden}`}></div>
 
         <div className={styles.inputGroup}>
           <label>Height (cm)</label>

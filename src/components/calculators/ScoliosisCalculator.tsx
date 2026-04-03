@@ -104,7 +104,7 @@ export default function ScoliosisCalculator({ dob, referenceDate, initialInputs,
         {/* RISSER SELECTOR */}
         <div className={styles.risserContainer}>
           <div className={styles.risserLabelRow}>
-            <label style={{fontSize: '0.875rem', fontWeight: 600, color: '#475569'}}>
+            <label className={styles.risserLabel}>
               Risser Sign (0-5)
             </label>
             {risserSign !== null && (

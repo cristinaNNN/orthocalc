@@ -78,7 +78,7 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
       {/* 2. MAIN RESULT (BMI) */}
       <div className={styles.mainResult}>
         <div className={styles.valueGroup}>
-            <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+            <div className={`${styles.flexAlignCenter} ${styles.gap6}`}>
                <span className={styles.bmiValue}>{result.bmi ?? 'N/A'}</span>
                
                {/* ADULT ONLY: Formula Audit on BMI Metric */}
@@ -102,7 +102,7 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
           <div className={styles.percentileRow}>
             <span>Percentile: <strong>{result.percentile}th</strong></span>
             
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div className={styles.flexAlignCenter}>
                 <span>Z-Score: <strong>{result.zScore} SD</strong></span>
                 {/* PEDIATRIC: Formula Audit on Z-Score Metric */}
                 <FormulaPopover 
@@ -114,10 +114,10 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
           
           <div className={styles.barContainer}>
              <div className={styles.barSegments}>
-                <div className={`${styles.seg} ${styles.blue}`} style={{width: '5%'}}></div>
-                <div className={`${styles.seg} ${styles.green}`} style={{width: '80%'}}></div>
-                <div className={`${styles.seg} ${styles.yellow}`} style={{width: '10%'}}></div>
-                <div className={`${styles.seg} ${styles.red}`} style={{width: '5%'}}></div>
+                 <div className={`${styles.seg} ${styles.blue} ${styles.seg5}`}></div>
+                 <div className={`${styles.seg} ${styles.green} ${styles.seg80}`}></div>
+                 <div className={`${styles.seg} ${styles.yellow} ${styles.seg10}`}></div>
+                 <div className={`${styles.seg} ${styles.red} ${styles.seg5}`}></div>
              </div>
              <div 
                 className={styles.marker} 
@@ -127,9 +127,9 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
              </div>
           </div>
           <div className={styles.barLabels}>
-            <span style={{left: '5%'}}>5th</span>
-            <span style={{left: '85%'}}>85th</span>
-            <span style={{left: '95%'}}>95th</span>
+            <span className={styles.barLabel5}>5th</span>
+            <span className={styles.barLabel85}>85th</span>
+            <span className={styles.barLabel95}>95th</span>
           </div>
         </div>
       )}
@@ -159,7 +159,7 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
           {meta.lms_parameters && (
              <>
                <div className={styles.metaItem}>
-                 <div style={{display: 'flex', alignItems: 'center'}}>
+                 <div className={styles.metaItemHeader}>
                     <span className={styles.metaLabel}>L (Power)</span>
                     <FormulaPopover 
                       title="Lambda (L)"
@@ -170,7 +170,7 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
                </div>
 
                <div className={styles.metaItem}>
-                 <div style={{display: 'flex', alignItems: 'center'}}>
+                 <div className={styles.metaItemHeader}>
                     <span className={styles.metaLabel}>M (Median)</span>
                     <FormulaPopover 
                       title="Mu (M)"
@@ -181,7 +181,7 @@ export default function BMIResultDisplay({ result, inputs }: BMIResultDisplayPro
                </div>
 
                <div className={styles.metaItem}>
-                 <div style={{display: 'flex', alignItems: 'center'}}>
+                 <div className={styles.metaItemHeader}>
                     <span className={styles.metaLabel}>S (Var)</span>
                     <FormulaPopover 
                       title="Sigma (S)"

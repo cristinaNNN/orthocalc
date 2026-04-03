@@ -33,9 +33,10 @@
   font-size: 0.875rem;
   color: var(--primary);
   font-weight: 500;
-  background-color: rgba(37, 99, 235, 0.1);
+  background-color: var(--secondary);
   padding: 2px 8px;
   border-radius: 99px;
+  border: 1px solid var(--border);
 }
 
 .actions {
@@ -92,7 +93,7 @@
 .historyBtnIcon {
   background: var(--surface);
   border: 1px solid var(--border);
-  color: #64748b;
+  color: var(--muted-foreground);
   width: 44px;
   height: 44px;
   border-radius: 10px;
@@ -104,10 +105,10 @@
 }
 
 .historyBtnIcon:hover {
-  background: #fffbeb;
-  color: #b45309;
-  border-color: #fcd34d;
-  box-shadow: 0 4px 12px rgba(120, 53, 15, 0.1);
+  background: var(--warning);
+  color: var(--warning-foreground);
+  border-color: var(--warning);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   transform: translateY(-1px);
 }
 
@@ -116,7 +117,7 @@
   align-items: center;
   gap: 0.5rem;
   background: var(--primary);
-  color: #ffffff;
+  color: var(--primary-foreground);
   border: none;
   padding: 0 1.25rem;
   height: 44px;
@@ -125,13 +126,13 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(var(--primary), 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .addBtn:hover {
   filter: brightness(1.1);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(var(--primary), 0.3);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .addBtn:active {
@@ -143,6 +144,12 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
+}
+
+.cardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
 }
 
 .card {
@@ -189,8 +196,8 @@
 
 .editBtn,
 .deleteBtn {
-  background: var(--surface);
-  color: #94a3b8;
+  background: var(--card);
+  color: var(--muted-foreground);
   border: 1px solid var(--border);
   width: 32px;
   height: 32px;
@@ -212,15 +219,15 @@
 }
 
 .editBtn:hover {
-  background: #eff6ff !important;
-  color: #3b82f6 !important;
-  border-color: #dbeafe !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border-color: var(--primary) !important;
 }
 
 .deleteBtn:hover {
-  background: #fef2f2 !important;
-  color: #ef4444 !important;
-  border-color: #fee2e2 !important;
+  background: var(--destructive) !important;
+  color: var(--destructive-foreground) !important;
+  border-color: var(--destructive) !important;
 }
 
 /* Removed redundant deleteBtn styles */
@@ -271,13 +278,13 @@
 }
 
 .loginCard {
-  background-color: var(--background);
+  background-color: var(--card);
   padding: 40px;
   border-radius: 16px;
   border: 1px solid var(--border);
   width: 100%;
   max-width: 400px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
 .loginTitle {
@@ -327,8 +334,9 @@
 }
 
 .error {
-  background-color: rgba(239, 68, 68, 0.1);
-  color: #ef4444;
+  background-color: var(--destructive);
+  opacity: 0.1;
+  color: var(--destructive);
   padding: 12px;
   border-radius: 8px;
   font-size: 0.9rem;

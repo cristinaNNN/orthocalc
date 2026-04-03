@@ -90,13 +90,10 @@ export default function AddEncounterModal({ patientId, isOpen, initialData, onCl
     <div className={styles.overlay} onClick={onClose}>
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <div className={styles.headerContent}>
             <h2>{initialData ? 'Edit Encounter' : 'New Encounter'}</h2>
-            <button 
-              onClick={onClose}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}
-            >
-              <X size={24} color="#64748b" />
+            <button onClick={onClose} className={styles.closeBtn}>
+              <X size={24} />
             </button>
           </div>
         </div>

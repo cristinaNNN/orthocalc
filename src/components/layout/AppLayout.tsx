@@ -6,6 +6,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ModalProvider, useModal } from "@/lib/context/ModalContext";
 import AddPatientModal from "@/components/patients/AddPatientModal";
+import styles from './AppLayout.module.css';
 
 export function AppLayout({ children, modal }: { children: React.ReactNode, modal: React.ReactNode }) {
   return (
@@ -17,7 +18,7 @@ export function AppLayout({ children, modal }: { children: React.ReactNode, moda
     >
       <ModalProvider>
         <Header />
-        <main style={{ minHeight: 'calc(100vh - 200px)' }}>
+        <main className={styles.main}>
           {children}
         </main>
         <Footer />

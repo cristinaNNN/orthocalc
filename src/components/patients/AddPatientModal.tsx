@@ -224,18 +224,18 @@ export default function AddPatientModal({ isOpen, initialData, onClose, onSucces
                   value={formData.cnp} 
                   onChange={handleCnpChange}
                   maxLength={13}
-                  style={{
-                    borderColor: cnpStatus.message 
-                      ? (cnpStatus.isValid ? '#16a34a' : '#dc2626') 
-                      : 'var(--border)'
-                  }}
+                  className={
+                    cnpStatus.message 
+                      ? (cnpStatus.isValid ? styles.inputSuccess : styles.inputError) 
+                      : ''
+                  }
                 />
                 {cnpStatus.message && (
                   <div className={styles.validationIcon}>
                     {cnpStatus.isValid ? (
-                      <CheckCircle2 size={18} color="#16a34a" />
+                      <CheckCircle2 size={18} className={styles.iconSuccess} />
                     ) : (
-                      <AlertCircle size={18} color="#dc2626" />
+                      <AlertCircle size={18} className={styles.iconError} />
                     )}
                   </div>
                 )}

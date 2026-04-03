@@ -232,7 +232,7 @@ export default function LLDCalculator({ patientAgeYears, patientGender, initialI
         )}
 
         {/* Current Measurements */}
-        <div className={styles.inputGroup} style={{ gridColumn: '1 / -1' }}>
+        <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
           <label>Current Segments (cm) - Right vs. Left</label>
           <div className={styles.compactMatrix}>
             <span className={styles.matrixRowLabel}>Femur</span>
@@ -255,7 +255,7 @@ export default function LLDCalculator({ patientAgeYears, patientGender, initialI
                 <input type="date" value={priorDate} onChange={(e) => setPriorDate(e.target.value)} className={styles.input} />
               </div>
             </div>
-            <div className={styles.inputGroup} style={{ visibility: 'hidden' }}></div>
+            <div className={`${styles.inputGroup} ${styles.hidden}`}></div>
 
             <div className={styles.inputGroup} style={{ gridColumn: '1 / -1' }}>
               <label>Prior Segments (cm) - Right vs. Left</label>
@@ -275,7 +275,7 @@ export default function LLDCalculator({ patientAgeYears, patientGender, initialI
         {/* Congenital Lengthenings */}
         {mode === 'CONGENITAL' && (
           <div className={styles.inputGroup} style={{ gridColumn: '1 / -1' }}>
-            <div className={styles.checkboxGroup} style={{ marginBottom: '0.5rem' }}>
+            <div className={`${styles.checkboxGroup} ${styles.mb8}`}>
               <input type="checkbox" id="lengtheningToggle" checked={hasLengthening} onChange={(e) => setHasLengthening(e.target.checked)} />
               <label htmlFor="lengtheningToggle">Account for Prior Surgical Lengthenings?</label>
             </div>

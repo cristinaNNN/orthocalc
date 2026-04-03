@@ -147,7 +147,7 @@ export default function PaleyHeightCalculator({ dob, gender, referenceDate, init
         ) : (
            <div className={styles.inputGroup}>
              <label>Chronological Age</label>
-             <div style={{ padding: '0.75rem', background: '#f1f5f9', borderRadius: '8px', color: '#64748b', fontSize: '1rem'}}>
+             <div className={styles.readOnlyValue}>
                 {(context.ageMonths / 12).toFixed(2)} Years
              </div>
            </div>

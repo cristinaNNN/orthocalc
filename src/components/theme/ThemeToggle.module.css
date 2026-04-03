@@ -1,7 +1,7 @@
 .toggle {
-  background: white;
-  border: 1px solid #e2e8f0;
-  color: #64748b;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--muted-foreground);
   width: 38px;
   height: 38px;
   border-radius: 10px;
@@ -10,27 +10,16 @@
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   position: relative;
 }
 
 .toggle:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
-  color: #0f172a;
+  background: var(--secondary);
+  border-color: var(--primary);
+  color: var(--foreground);
   transform: translateY(-1px);
-}
-
-:global(.dark) .toggle {
-  background: #1e293b;
-  border-color: #334155;
-  color: #94a3b8;
-}
-
-:global(.dark) .toggle:hover {
-  background: #334155;
-  color: #f8fafc;
 }
 
 .iconWrapper {

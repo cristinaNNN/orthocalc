@@ -137,7 +137,7 @@ export default function LLDResultDisplay({ result, inputs }: LLDResultProps) {
       {/* 2. MAIN RESULT (Formula only in popover) */}
       <div className={styles.mainResult}>
          <div className={styles.valueGroup}>
-            <div style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+            <div className={`${styles.flexAlignCenter} ${styles.gap6}`}>
                <span className={styles.mainValue}>{result.projected_lld_cm.toFixed(2)}</span>
                <FormulaPopover 
                   title="Projected LLD Formula"
@@ -173,7 +173,6 @@ export default function LLDResultDisplay({ result, inputs }: LLDResultProps) {
         {renderStackedBar('LEFT')}
       </div>
 
-      <div className={styles.divider} />
 
       {/* 4. METHODOLOGY & PARAMETERS */}
       <div className={styles.metaContainer}>
@@ -187,27 +186,27 @@ export default function LLDResultDisplay({ result, inputs }: LLDResultProps) {
 
          <div className={styles.metaGrid}>
             <div className={styles.metaItem}>
-               <div style={{display: 'flex', alignItems: 'center'}}>
-                  <span className={styles.metaLabel}>Type</span>
-                  <FormulaPopover title="Clinical Pathway" description={typeDesc} />
-               </div>
-               <span className={styles.metaValue} style={{fontSize: '0.9rem'}}>
-                 {isCongenital ? 'Congenital' : 'Developmental'}
-               </span>
+                <div className={styles.flexAlignCenter}>
+                   <span className={styles.metaLabel}>Type</span>
+                   <FormulaPopover title="Clinical Pathway" description={typeDesc} />
+                </div>
+                <span className={`${styles.metaValue} ${styles.textSm}`}>
+                  {isCongenital ? 'Congenital' : 'Developmental'}
+                </span>
             </div>
 
             <div className={styles.metaItem}>
-               <div style={{display: 'flex', alignItems: 'center'}}>
+               <div className={styles.flexAlignCenter}>
                   <span className={styles.metaLabel}>Projection Eq.</span>
                   <FormulaPopover title="Projection Formula" formula={projectionFormula} />
                </div>
-               <span className={styles.metaValue} style={{fontSize: '0.85rem'}}>
-                 {isCongenital ? 'Proportional Multiplier' : 'Segmental Inhibition'}
-               </span>
+                <span className={`${styles.metaValue} ${styles.textXs}`}>
+                  {isCongenital ? 'Proportional Multiplier' : 'Segmental Inhibition'}
+                </span>
             </div>
 
             <div className={styles.metaItem}>
-               <div style={{display: 'flex', alignItems: 'center'}}>
+               <div className={styles.flexAlignCenter}>
                   <span className={styles.metaLabel}>Multiplier (M)</span>
                   <FormulaPopover title="Multiplier Coefficient" description="A coefficient derived from the Paley growth charts (2000/2016). It projects final height based on the ratio of current height to maturity." />
                </div>
@@ -215,13 +214,13 @@ export default function LLDResultDisplay({ result, inputs }: LLDResultProps) {
             </div>
 
             <div className={styles.metaItem}>
-               <div style={{display: 'flex', alignItems: 'center'}}>
+               <div className={styles.flexAlignCenter}>
                   <span className={styles.metaLabel}>Input Mode</span>
                   <FormulaPopover title="Age Determination" description="Specifies whether Chronological Age (DOB) or skeletal Bone Age was used. Bone Age is preferred for patients with advanced/delayed maturity." />
                </div>
-               <span className={styles.metaValue} style={{fontSize: '0.9rem'}}>
-                 {isBoneAge ? 'Skeletal Age (Manual)' : 'Chronological (DOB)'}
-               </span>
+                <span className={`${styles.metaValue} ${styles.textSm}`}>
+                  {isBoneAge ? 'Skeletal Age (Manual)' : 'Chronological (DOB)'}
+                </span>
             </div>
 
             <div className={styles.metaItem}>
