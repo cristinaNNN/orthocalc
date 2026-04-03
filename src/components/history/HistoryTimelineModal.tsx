@@ -76,7 +76,8 @@ export default function HistoryTimelineModal({ isOpen, onClose }: HistoryTimelin
     switch (log.entity_type) {
       case 'PATIENT': return <UserPlus size={16} />
       case 'ENCOUNTER': return <CalendarClock size={16} />
-      case 'CALCULATION': return <Calculator size={16} />
+      case 'CALCULATION': 
+      case 'OBSERVATION': return <Calculator size={16} />
       default: return <Clock size={16} />
     }
   }
@@ -84,8 +85,39 @@ export default function HistoryTimelineModal({ isOpen, onClose }: HistoryTimelin
   const getEventColorClass = (log: AuditLog) => {
     if (log.event_type === 'DELETE') return styles.dotRed
     if (log.event_type === 'UPDATE') return styles.dotYellow
-    if (log.entity_type === 'CALCULATION') return styles.dotBlue
     return styles.dotGreen
+  }
+
+  const getTagColorClass = (log: AuditLog) => {
+    switch (log.entity_type) {
+      case 'PATIENT': return styles.tagPurple
+      case 'ENCOUNTER': return styles.tagCyan
+      case 'CALCULATION': 
+      case 'OBSERVATION': return styles.tagBlue
+      default: return ''
+    }
+  }
+
+  const getEntityTypeName = (type: string) => {
+    switch (type) {
+      case 'PATIENT': return 'Patient'
+      case 'ENCOUNTER': return 'Encounter'
+      case 'CALCULATION': 
+      case 'OBSERVATION': return 'Calculation'
+      default: return type.charAt(0) + type.slice(1).toLowerCase()
+    }
+  }
+
+  const getEncounterDisplayName = (type?: string) => {
+    const mapping: { [key: string]: string } = {
+      'Consultation': 'Initial Consultation',
+      'Follow-up': 'Follow-up Visit',
+      'Surgery': 'Surgery',
+      'Post-Op': 'Post-Op Check',
+      'Growth Check': 'Growth/Deformity Check'
+    }
+    
+    return type ? (mapping[type] || type) : 'Encounter'
   }
 
   const formatTime = (dateStr: string) => {
@@ -96,50 +128,56 @@ export default function HistoryTimelineModal({ isOpen, onClose }: HistoryTimelin
   }
 
   const renderJournalEntry = (log: AuditLog) => {
-    if (!log.metadata) {
-      return <div className={styles.entityName}>{log.entity_name}</div>
+    const { action, entity, parent, patient, type } = log.metadata || {}
+    
+    // Standardize Action Label
+    let actionLabel = 'Added'
+    if (log.event_type === 'UPDATE') actionLabel = 'Updated'
+    if (log.event_type === 'DELETE') actionLabel = 'Deleted'
+
+    // Template 1: Patient -> [Action] [Patient Name]
+    if (log.entity_type === 'PATIENT') {
+      return (
+        <div className={styles.journalEntry}>
+          <span className={styles.connector}>{actionLabel} </span>
+          <span className={styles.textPurple}>{patient || log.entity_name}</span>
+        </div>
+      )
     }
 
-    const { action, entity, parent, patient, type } = log.metadata
+    // Template 2: Encounter -> [Action] [Encounter Type] for [Patient Name]
+    if (log.entity_type === 'ENCOUNTER') {
+      const encounterDisplay = getEncounterDisplayName(type)
+      return (
+        <div className={styles.journalEntry}>
+          <span className={styles.connector}>{actionLabel} </span>
+          <span className={styles.textCyan}>{encounterDisplay}</span>
+          <span className={styles.connector}> for </span>
+          <span className={styles.textPurple}>{patient || 'Unknown Patient'}</span>
+        </div>
+      )
+    }
 
-    // 🔬 V2 Journal Logic: Professional Medical Board phrasing
-    // Encounters: Added Consultation (Routine Checkup) for Stefania Potyesz
-    // Calculations: Added BMI in Consultation (Routine Checkup) for Stefania Potyesz
+    // Template 3: Calculation -> [Action] [Calculation Name] in [Encounter Type] for [Patient Name]
+    if (log.entity_type === 'CALCULATION' || log.entity_type === 'OBSERVATION') {
+      const encounterDisplay = getEncounterDisplayName(type)
+      return (
+        <div className={styles.journalEntry}>
+          <span className={styles.connector}>{actionLabel} </span>
+          <span className={styles.textBlue}>{entity || 'Calculation'}</span>
+          <span className={styles.connector}> in </span>
+          <span className={styles.textCyan}>{encounterDisplay}</span>
+          <span className={styles.connector}> for </span>
+          <span className={styles.textPurple}>{patient || 'Unknown Patient'}</span>
+        </div>
+      )
+    }
 
+    // Fallback
     return (
       <div className={styles.journalEntry}>
-        <span className={styles.connector}>{action}</span>
-        
-        {/* 1. Main Subject (The entity being added) */}
-        <span className={styles.highlight}>
-          {log.entity_type === 'ENCOUNTER' ? type || 'Encounter' : (log.entity_type === 'PATIENT' ? '' : entity)}
-        </span>
-        
-        {/* 2. Contextual 'in' link for Calculations */}
-        {log.entity_type === 'CALCULATION' && type && (
-          <>
-            <span className={styles.connector}>in</span>
-            <span className={styles.highlight}>{type}</span>
-          </>
-        )}
-
-        {/* 3. Bracketed 'Reason' - (Routine Checkup) - Subdued styling */}
-        {parent && log.entity_type !== 'PATIENT' && (
-          <span className={styles.bracketContent}>({parent})</span>
-        )}
-
-        {/* 4. Patient Association (Hidden for PATIENT actions to avoid redundancy) */}
-        {patient && log.entity_type !== 'PATIENT' && (
-          <>
-            <span className={styles.connector}>for</span>
-            <span className={styles.highlight}>{patient}</span>
-          </>
-        )}
-
-        {/* 5. Patient Name for PATIENT actions: "Added [Name]" */}
-        {patient && log.entity_type === 'PATIENT' && (
-          <span className={styles.highlight}>{patient}</span>
-        )}
+        <span className={styles.connector}>{actionLabel} </span>
+        <span className={styles.highlight}>{log.entity_name}</span>
       </div>
     )
   }
@@ -186,8 +224,8 @@ export default function HistoryTimelineModal({ isOpen, onClose }: HistoryTimelin
                           </div>
                           <div className={styles.content}>
                             <div className={styles.itemHeader}>
-                              <span className={styles.eventLabel}>
-                                {log.entity_type}
+                              <span className={`${styles.eventLabel} ${getTagColorClass(log)}`}>
+                                {getEntityTypeName(log.entity_type)}
                               </span>
                               <span className={styles.time}>{formatTime(log.created_at)}</span>
                             </div>

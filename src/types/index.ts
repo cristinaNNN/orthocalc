@@ -109,7 +109,7 @@ export interface AuditLog {
   id: string
   doctor_id: string
   event_type: 'INSERT' | 'UPDATE' | 'DELETE'
-  entity_type: 'PATIENT' | 'ENCOUNTER' | 'CALCULATION'
+  entity_type: 'PATIENT' | 'ENCOUNTER' | 'CALCULATION' | 'OBSERVATION'
   entity_name: string
   metadata?: any
   created_at: string

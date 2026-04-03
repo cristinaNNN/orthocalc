@@ -156,11 +156,10 @@
   transition: all 0.2s;
 }
 
-/* Status colors */
-.dotGreen { border-color: #10b981; color: #10b981; }
-.dotBlue { border-color: #3b82f6; color: #3b82f6; }
-.dotRed { border-color: #ef4444; color: #ef4444; }
-.dotYellow { border-color: #f59e0b; color: #f59e0b; }
+/* Action status colors (Dots) */
+.dotGreen { border-color: #10b981; color: #10b981; background: #ecfdf5; }
+.dotYellow { border-color: #f59e0b; color: #f59e0b; background: #fffbeb; }
+.dotRed { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
 
 .timelineItem:hover .dot {
   transform: scale(1.1);
@@ -195,11 +194,16 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
   color: #64748b;
-  background: #e2e8f0;
-  padding: 2px 6px;
-  border-radius: 4px;
 }
+
+/* Tag colors */
+.tagPurple { background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; }
+.tagCyan { background: #ecfeff; color: #0891b2; border: 1px solid #cffafe; }
+.tagBlue { background: #eff6ff; color: #2563eb; border: 1px solid #dbeafe; }
 
 .time {
   font-size: 0.75rem;
@@ -225,9 +229,14 @@
 
 .highlight {
   font-size: 1rem;
-  color: #78350f; /* Sienna for clinical entities */
-  font-weight: 700;
+  color: #0f172a;
+  font-weight: 600;
 }
+
+/* Mention colors */
+.textPurple { color: #7c3aed; font-weight: 700; }
+.textCyan { color: #0891b2; font-weight: 700; }
+.textBlue { color: #2563eb; font-weight: 700; }
 
 .bracketContent {
   font-size: 1rem;
